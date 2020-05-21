@@ -208,6 +208,7 @@ const actions = {
 				city : res.selfinfo.common.city,
 				area : res.selfinfo.common.area,
 				sign : res.selfinfo.common.sign,
+				showUserName : res.selfinfo.showUsername
 			})
 		})
 	},

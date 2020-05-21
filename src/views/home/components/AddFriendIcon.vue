@@ -10,7 +10,11 @@
             </el-dropdown>
         </el-tooltip>
         <!-- 搜索到用户后的展示dialog -->
-        <el-dialog :visible.sync="showSearchUser" class="friend-info" append-to-body width='450px'>
+        <el-dialog 
+            :visible.sync="showSearchUser" 
+            class="friend-info" 
+            append-to-body width='450px'
+            :before-close='cancelApply'>
             <header class="s-b">
                 <div class="f-s">
                     <user-avatar :img-path='addUserInfo.icon' img-width='60px' style="margin-right:15px"></user-avatar>
@@ -86,6 +90,14 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({ value }) => {
+
+
+                    //不能搜索自己的账号
+                    if (value == this.$store.state.userModule.userInfo.showUserName) {
+                        this.$message({message: '不能添加自己为好友哟', type: 'error'})
+                        return;
+                    }
+
                     SearchUser(this.$store.state.userModule.config, value).then((r) => {
                         
                         if (r.baseinfo.code == 400) {
@@ -114,10 +126,12 @@
             },
             //取消申请好友
             cancelApply () {
+                //重置相关数据
                 this.addUserInfo = {
                     icon : null
                 }
                 this.showSearchUser = false;
+                this.addUserForm = false;
                 this.applyMsg = ''
             },
             //发送好友申请
