@@ -6,7 +6,7 @@
 <script>
 	export default {
 		mounted () {
-			console.log(this.$store.getters['userModule/list'])
+			
 			//禁用鼠标右键
 			document.oncontextmenu = (e) => {
 				let event = e || window.event || arguments.callee.caller.arguments[0]

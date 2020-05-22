@@ -18,6 +18,11 @@ const cdn = {
 }
 
 module.exports = {
+	//开发服务器
+	devServer: {
+        port: 8888,
+        open: true,
+	},
 	//vue webpack拓展
     chainWebpack: config => {
 		//删除prefetch预加载模块

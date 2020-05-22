@@ -35,13 +35,59 @@
                     所在地区：{{$store.state.userModule.userInfo.prov}}{{$store.state.userModule.userInfo.city}}{{$store.state.userModule.userInfo.area}}
                 </li>
             </ul>
+            <div class="center">
+                <el-button type="primary" icon="el-icon-edit" circle size='small' @click='showEditDialog = true'></el-button>
+            </div>
         </div>
         <!-- 头像占位符 -->
         <user-avatar style="margin-bottom: 15px" slot='reference'></user-avatar>
+        <!-- 标记用户信息 -->
+        <el-dialog
+            class="no-body-padding-dialog"
+            append-to-body
+            :close-on-click-modal='false'
+            center
+            :visible.sync='showEditDialog'
+            title='修改信息'
+            width='300px'>
+            <el-form size='mini' inline label-width="60px" :model="userInfo" :rules='rules' ref='editUserInfoForm'>
+                <!-- <el-form-item label='头像'>
+                    <el-upload
+                        class="avatar-uploader"
+                        action="https://jsonplaceholder.typicode.com/posts/"
+                        :show-file-list="false"
+                        :on-success="handleAvatarSuccess"
+                        :before-upload="beforeAvatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        <user-avatar v-else img-width='50px'></user-avatar>
+                    </el-upload>
+                </el-form-item> -->
+                <el-form-item label='昵称' prop='name'>
+                    <el-input placeholder="请输入昵称" v-model.trim="userInfo.name" style="width:100%"></el-input>
+                </el-form-item>
+                <el-form-item label='性别'>
+                    <el-select v-model='userInfo.gender'>
+                        <el-option label='男' :value='1'></el-option>
+                        <el-option label='女' :value='2'></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label='地址'>
+                    <el-cascader :options='cityData' :props="{label : 'label', value:'label'}" v-model='fullCityData'></el-cascader>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button size='mini' @click='showEditDialog = false'>取 消</el-button>
+                <el-button type="primary" size='mini' @click='editConfirm'>确 定</el-button>
+            </span>
+        </el-dialog>
     </el-popover>
 </template>
 <script>
     import userAvatar from '@c/UserAvatar'
+    import cityData from '@u/cityData'
+    import { UpdateMyInfo,UPDATE_MY_AVATAR } from '@itf/UserActClient'
+    import { CommonUserInfo } from '@itf/common/common_pb'
+
     export default {
         components :{
             userAvatar
@@ -59,6 +105,67 @@
                         return '-'
                         break;
                 }
+            },
+            userInfo () {
+                return this.$store.state.userModule.userInfo
+            }
+        },
+        data () {
+            return {
+                showEditDialog : false,//是否显示编辑信息dialog
+                //填写信息表单校验规则
+                rules : {
+                    name: [
+                        { required: true, message: '请填写昵称', trigger: 'blur' },
+                    ],
+                },
+                cityData,//城市数据源
+                //完整的城市数据数组
+                fullCityData : [this.$store.state.userModule.userInfo.prov, this.$store.state.userModule.userInfo.city, this.$store.state.userModule.userInfo.area]
+            }
+        },
+        methods : {
+            //编辑确认逻辑
+            editConfirm () {
+                this.$refs.editUserInfoForm.validate( (valid) =>{
+                    if (valid) {
+                        //提交更新后的用户信息
+                        this.updateHandle()
+                    } else {
+                        return false;
+                    }
+                })
+            },
+            //更新逻辑
+            updateHandle () {
+                let userInfo = new CommonUserInfo();
+
+                userInfo.setName(this.userInfo.name)
+                userInfo.setGender(this.userInfo.gender)
+                userInfo.setProv(this.fullCityData.length ? this.fullCityData[0] : '')
+                userInfo.setCity(this.fullCityData.length ? this.fullCityData[1] : '')
+                userInfo.setArea(this.fullCityData.length ? this.fullCityData[2] : '')
+
+
+                UpdateMyInfo(this.$store.state.userModule.config, userInfo)
+                .then(res =>{
+                    if (res.baseinfo.code == 200) {
+                        this.$message({
+                            type: 'success',
+                            message: '资料修改成功!'
+                        })
+
+                        this.userInfo.fullCityData = this.fullCityData || ['', '', '']
+
+                        this.$store.commit('userModule/updateUserInfo', this.userInfo)
+                        this.showEditDialog = false;
+                    } else {
+                        this.$message({
+                            type: 'error',
+                            message: res.baseinfo.msg
+                        })
+                    }
+                })
             }
         }
     }

@@ -8,10 +8,12 @@
   },
   "dependencies": {
     "@grpc/proto-loader": "^0.5.4",
+    "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "crypto-js": "^4.0.0",
     "element-ui": "^2.13.2",
-    "google-protobuf": "^3.12.0",
+    "google-protobuf": "^3.11.4",
+    "grpc": "^1.24.2",
     "grpc-web": "^1.0.7",
     "js-md5": "^0.7.3",
     "vue": "^2.6.11",

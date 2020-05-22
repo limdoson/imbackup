@@ -214,7 +214,6 @@ export function GetAppliesList(metadata) {
 	return new Promise((resolve, reject) => {
 		userActClient.getAppliesList(request, metadata, (err, response) => {
 		rpcLog('GetAppliesList', request, err, response)
-
 			if (err) {
 				reject(err)
 			} else {

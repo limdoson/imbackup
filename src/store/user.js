@@ -70,6 +70,16 @@ const mutations = {
 		}
 	},
 	/* 
+		更新用户信息
+	*/
+	updateUserInfo (state, input) {
+		state.userInfo.name = input.name;
+		state.userInfo.gender = input.gender;
+		state.userInfo.prov = input.fullCityData[0] || ''
+		state.userInfo.city = input.fullCityData[1] || ''
+		state.userInfo.area = input.fullCityData[2] || ''
+	},
+	/* 
 		初始化联系人
 	*/
 	initContacts (state, input) {
@@ -151,7 +161,40 @@ const mutations = {
 				item.isShow = item.base.name.indexOf(text) > -1;
 			}
 		})
-		console.log(state.list.filter(item => item.isShow))
+	},
+	/* 
+		添加好友
+	*/
+	addFriends (state, input) {
+		contact.setting.name = contact.common.nam
+		let newContact = {
+			// 原始字段
+			account: contact.accid,
+			accid: contact.accid,
+			alias: contact.setting.alias,
+			avatar: contact.common.avatar,
+			isBlack: contact.setting.isBlack,
+			//msgPrompt: contact.msgPrompt, // 是否
+			name: contact.common.name,
+			sessionTop: contact.sessionTop,
+			sessionType: SessionTypes.SINGLE,
+			// 扩展字段
+			type: 'friend',
+			// 搜索用字段
+			isShow: true,
+			showName: showName(contact.setting),
+			// 以下群聊发起使用字段
+			key: contact.accid,
+			label: showName(contact),
+			// 消息未读数量
+			unread: 0,
+		}
+		//向最近聊天和联系人中加入通过的该好友
+		state.chats.unshift(newContact)
+		state.contacts.unshift(newContact)
+
+		// state.tab = 'chats'
+		// state.item = newContact
 	}
 }
 
@@ -161,14 +204,15 @@ const actions = {
 		-commit 用户数据
 		-dispacth 消息订阅
 	*/
-	userLogin ({commit, dispatch}, input) {
+	userLogin ({commit, dispatch,state, rootState}, input) {
+		console.log(rootState)
 		commit('userLogin', input)
 		//消息订阅
 		dispatch('apiSubscribe')
-		//请求好友列表
-		
 		//请求用户信息
 		dispatch('getUserInfo')
+		//拉取未读消息 触发messageModule中的getSystemNotice（dispatch）
+		dispatch('getSystemNotice', null, {root: true})
 	},
 	/* 
 		消息订阅
@@ -178,6 +222,7 @@ const actions = {
 		//接受到消息
 		subscribe.on('data', response =>{
 			let result = response.toObject()
+			// console.log('ondata', result)
 			EventHandler(context, result)
 		})
 		subscribe.on('status', function(status) {

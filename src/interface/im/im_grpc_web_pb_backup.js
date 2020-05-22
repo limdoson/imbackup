@@ -12,7 +12,7 @@ const grpc = {};
 grpc.web = require('grpc-web');
 
 
-var message_pb = require('./message_pb.js')
+var im_message_pb = require('../im/message_pb.js')
 
 var common_common_pb = require('../common/common_pb.js')
 const proto = {};
@@ -1245,52 +1245,52 @@ proto.im.UserActPromiseClient.prototype.pullSessionList =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.im.GetFriendListRequest,
- *   !proto.im.GetFriendListResponse>}
+ *   !proto.common.GetRequest,
+ *   !proto.common.ReturnFriendsInfo>}
  */
 const methodDescriptor_UserAct_GetFriendList = new grpc.web.MethodDescriptor(
   '/im.UserAct/GetFriendList',
   grpc.web.MethodType.UNARY,
-  message_pb.GetFriendListRequest,
-  message_pb.GetFriendListResponse,
+  common_common_pb.GetRequest,
+  common_common_pb.ReturnFriendsInfo,
   /**
-   * @param {!proto.im.GetFriendListRequest} request
+   * @param {!proto.common.GetRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.GetFriendListResponse.deserializeBinary
+  common_common_pb.ReturnFriendsInfo.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.im.GetFriendListRequest,
- *   !proto.im.GetFriendListResponse>}
+ *   !proto.common.GetRequest,
+ *   !proto.common.ReturnFriendsInfo>}
  */
 const methodInfo_UserAct_GetFriendList = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.GetFriendListResponse,
+  common_common_pb.ReturnFriendsInfo,
   /**
-   * @param {!proto.im.GetFriendListRequest} request
+   * @param {!proto.common.GetRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.GetFriendListResponse.deserializeBinary
+  common_common_pb.ReturnFriendsInfo.deserializeBinary
 );
 
 
 /**
- * @param {!proto.im.GetFriendListRequest} request The
+ * @param {!proto.common.GetRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.im.GetFriendListResponse)}
+ * @param {function(?grpc.web.Error, ?proto.common.ReturnFriendsInfo)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.im.GetFriendListResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnFriendsInfo>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.UserActClient.prototype.getFriendList =
@@ -1305,11 +1305,11 @@ proto.im.UserActClient.prototype.getFriendList =
 
 
 /**
- * @param {!proto.im.GetFriendListRequest} request The
+ * @param {!proto.common.GetRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.im.GetFriendListResponse>}
+ * @return {!Promise<!proto.common.ReturnFriendsInfo>}
  *     A native promise that resolves to the response
  */
 proto.im.UserActPromiseClient.prototype.getFriendList =
@@ -1651,7 +1651,7 @@ proto.im.UserActPromiseClient.prototype.checkAddTypeSetting =
 const methodDescriptor_UserAct_SearchUser = new grpc.web.MethodDescriptor(
   '/im.UserAct/SearchUser',
   grpc.web.MethodType.UNARY,
-  message_pb.AppSearchRequest,
+  im_message_pb.AppSearchRequest,
   common_common_pb.SearchResponseOfUser,
   /**
    * @param {!proto.im.AppSearchRequest} request
@@ -1731,8 +1731,8 @@ proto.im.UserActPromiseClient.prototype.searchUser =
 const methodDescriptor_UserAct_GetAppliesList = new grpc.web.MethodDescriptor(
   '/im.UserAct/GetAppliesList',
   grpc.web.MethodType.UNARY,
-  message_pb.GetApplyListRequest,
-  message_pb.GetApplyListResponse,
+  im_message_pb.GetApplyListRequest,
+  im_message_pb.GetApplyListResponse,
   /**
    * @param {!proto.im.GetApplyListRequest} request
    * @return {!Uint8Array}
@@ -1740,7 +1740,7 @@ const methodDescriptor_UserAct_GetAppliesList = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.GetApplyListResponse.deserializeBinary
+  im_message_pb.GetApplyListResponse.deserializeBinary
 );
 
 
@@ -1751,7 +1751,7 @@ const methodDescriptor_UserAct_GetAppliesList = new grpc.web.MethodDescriptor(
  *   !proto.im.GetApplyListResponse>}
  */
 const methodInfo_UserAct_GetAppliesList = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.GetApplyListResponse,
+  im_message_pb.GetApplyListResponse,
   /**
    * @param {!proto.im.GetApplyListRequest} request
    * @return {!Uint8Array}
@@ -1759,7 +1759,7 @@ const methodInfo_UserAct_GetAppliesList = new grpc.web.AbstractClientBase.Method
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.GetApplyListResponse.deserializeBinary
+  im_message_pb.GetApplyListResponse.deserializeBinary
 );
 
 
@@ -2103,8 +2103,8 @@ proto.im.TeamActPromiseClient.prototype.updateAnnouncement =
 const methodDescriptor_TeamAct_AcceptInvite = new grpc.web.MethodDescriptor(
   '/im.TeamAct/AcceptInvite',
   grpc.web.MethodType.UNARY,
-  message_pb.AcceptTeamInviteRequest,
-  message_pb.AcceptTeamInviteResponse,
+  im_message_pb.AcceptTeamInviteRequest,
+  im_message_pb.AcceptTeamInviteResponse,
   /**
    * @param {!proto.im.AcceptTeamInviteRequest} request
    * @return {!Uint8Array}
@@ -2112,7 +2112,7 @@ const methodDescriptor_TeamAct_AcceptInvite = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.AcceptTeamInviteResponse.deserializeBinary
+  im_message_pb.AcceptTeamInviteResponse.deserializeBinary
 );
 
 
@@ -2123,7 +2123,7 @@ const methodDescriptor_TeamAct_AcceptInvite = new grpc.web.MethodDescriptor(
  *   !proto.im.AcceptTeamInviteResponse>}
  */
 const methodInfo_TeamAct_AcceptInvite = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.AcceptTeamInviteResponse,
+  im_message_pb.AcceptTeamInviteResponse,
   /**
    * @param {!proto.im.AcceptTeamInviteRequest} request
    * @return {!Uint8Array}
@@ -2131,7 +2131,7 @@ const methodInfo_TeamAct_AcceptInvite = new grpc.web.AbstractClientBase.MethodIn
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.AcceptTeamInviteResponse.deserializeBinary
+  im_message_pb.AcceptTeamInviteResponse.deserializeBinary
 );
 
 
@@ -2183,8 +2183,8 @@ proto.im.TeamActPromiseClient.prototype.acceptInvite =
 const methodDescriptor_TeamAct_RejectInvite = new grpc.web.MethodDescriptor(
   '/im.TeamAct/RejectInvite',
   grpc.web.MethodType.UNARY,
-  message_pb.RejectTeamInviteRequest,
-  message_pb.RejectTeamInviteResponse,
+  im_message_pb.RejectTeamInviteRequest,
+  im_message_pb.RejectTeamInviteResponse,
   /**
    * @param {!proto.im.RejectTeamInviteRequest} request
    * @return {!Uint8Array}
@@ -2192,7 +2192,7 @@ const methodDescriptor_TeamAct_RejectInvite = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.RejectTeamInviteResponse.deserializeBinary
+  im_message_pb.RejectTeamInviteResponse.deserializeBinary
 );
 
 
@@ -2203,7 +2203,7 @@ const methodDescriptor_TeamAct_RejectInvite = new grpc.web.MethodDescriptor(
  *   !proto.im.RejectTeamInviteResponse>}
  */
 const methodInfo_TeamAct_RejectInvite = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.RejectTeamInviteResponse,
+  im_message_pb.RejectTeamInviteResponse,
   /**
    * @param {!proto.im.RejectTeamInviteRequest} request
    * @return {!Uint8Array}
@@ -2211,7 +2211,7 @@ const methodInfo_TeamAct_RejectInvite = new grpc.web.AbstractClientBase.MethodIn
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.RejectTeamInviteResponse.deserializeBinary
+  im_message_pb.RejectTeamInviteResponse.deserializeBinary
 );
 
 
@@ -3595,7 +3595,7 @@ proto.im.SubscribePromiseClient =
 const methodDescriptor_Subscribe_Subscribe = new grpc.web.MethodDescriptor(
   '/im.Subscribe/Subscribe',
   grpc.web.MethodType.SERVER_STREAMING,
-  message_pb.SubscribeRequest,
+  im_message_pb.SubscribeRequest,
   common_common_pb.MsgInfo,
   /**
    * @param {!proto.im.SubscribeRequest} request
@@ -3934,8 +3934,8 @@ proto.im.SessionActPromiseClient.prototype.deleteMsg =
 const methodDescriptor_SessionAct_Notify = new grpc.web.MethodDescriptor(
   '/im.SessionAct/Notify',
   grpc.web.MethodType.UNARY,
-  message_pb.NotifyMsgRequest,
-  message_pb.NotifyMsgResponse,
+  im_message_pb.NotifyMsgRequest,
+  im_message_pb.NotifyMsgResponse,
   /**
    * @param {!proto.im.NotifyMsgRequest} request
    * @return {!Uint8Array}
@@ -3943,7 +3943,7 @@ const methodDescriptor_SessionAct_Notify = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.NotifyMsgResponse.deserializeBinary
+  im_message_pb.NotifyMsgResponse.deserializeBinary
 );
 
 
@@ -3954,7 +3954,7 @@ const methodDescriptor_SessionAct_Notify = new grpc.web.MethodDescriptor(
  *   !proto.im.NotifyMsgResponse>}
  */
 const methodInfo_SessionAct_Notify = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.NotifyMsgResponse,
+  im_message_pb.NotifyMsgResponse,
   /**
    * @param {!proto.im.NotifyMsgRequest} request
    * @return {!Uint8Array}
@@ -3962,7 +3962,7 @@ const methodInfo_SessionAct_Notify = new grpc.web.AbstractClientBase.MethodInfo(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.NotifyMsgResponse.deserializeBinary
+  im_message_pb.NotifyMsgResponse.deserializeBinary
 );
 
 
@@ -4094,8 +4094,8 @@ proto.im.SessionActPromiseClient.prototype.read =
 const methodDescriptor_SessionAct_Recall = new grpc.web.MethodDescriptor(
   '/im.SessionAct/Recall',
   grpc.web.MethodType.UNARY,
-  message_pb.RecallRequest,
-  message_pb.RecallResponse,
+  im_message_pb.RecallRequest,
+  im_message_pb.RecallResponse,
   /**
    * @param {!proto.im.RecallRequest} request
    * @return {!Uint8Array}
@@ -4103,7 +4103,7 @@ const methodDescriptor_SessionAct_Recall = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.RecallResponse.deserializeBinary
+  im_message_pb.RecallResponse.deserializeBinary
 );
 
 
@@ -4114,7 +4114,7 @@ const methodDescriptor_SessionAct_Recall = new grpc.web.MethodDescriptor(
  *   !proto.im.RecallResponse>}
  */
 const methodInfo_SessionAct_Recall = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.RecallResponse,
+  im_message_pb.RecallResponse,
   /**
    * @param {!proto.im.RecallRequest} request
    * @return {!Uint8Array}
@@ -4122,7 +4122,7 @@ const methodInfo_SessionAct_Recall = new grpc.web.AbstractClientBase.MethodInfo(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.RecallResponse.deserializeBinary
+  im_message_pb.RecallResponse.deserializeBinary
 );
 
 
@@ -4730,8 +4730,8 @@ proto.im.ServerPromiseClient.prototype.ping =
 const methodDescriptor_Server_Login = new grpc.web.MethodDescriptor(
   '/im.Server/Login',
   grpc.web.MethodType.UNARY,
-  message_pb.LoginRequest,
-  message_pb.LoginResponse,
+  im_message_pb.LoginRequest,
+  im_message_pb.LoginResponse,
   /**
    * @param {!proto.im.LoginRequest} request
    * @return {!Uint8Array}
@@ -4739,7 +4739,7 @@ const methodDescriptor_Server_Login = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.LoginResponse.deserializeBinary
+  im_message_pb.LoginResponse.deserializeBinary
 );
 
 
@@ -4750,7 +4750,7 @@ const methodDescriptor_Server_Login = new grpc.web.MethodDescriptor(
  *   !proto.im.LoginResponse>}
  */
 const methodInfo_Server_Login = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.LoginResponse,
+  im_message_pb.LoginResponse,
   /**
    * @param {!proto.im.LoginRequest} request
    * @return {!Uint8Array}
@@ -4758,7 +4758,7 @@ const methodInfo_Server_Login = new grpc.web.AbstractClientBase.MethodInfo(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.LoginResponse.deserializeBinary
+  im_message_pb.LoginResponse.deserializeBinary
 );
 
 
@@ -4810,8 +4810,8 @@ proto.im.ServerPromiseClient.prototype.login =
 const methodDescriptor_Server_Logout = new grpc.web.MethodDescriptor(
   '/im.Server/Logout',
   grpc.web.MethodType.UNARY,
-  message_pb.LoginRequest,
-  message_pb.LoginResponse,
+  im_message_pb.LoginRequest,
+  im_message_pb.LoginResponse,
   /**
    * @param {!proto.im.LoginRequest} request
    * @return {!Uint8Array}
@@ -4819,7 +4819,7 @@ const methodDescriptor_Server_Logout = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.LoginResponse.deserializeBinary
+  im_message_pb.LoginResponse.deserializeBinary
 );
 
 
@@ -4830,7 +4830,7 @@ const methodDescriptor_Server_Logout = new grpc.web.MethodDescriptor(
  *   !proto.im.LoginResponse>}
  */
 const methodInfo_Server_Logout = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.LoginResponse,
+  im_message_pb.LoginResponse,
   /**
    * @param {!proto.im.LoginRequest} request
    * @return {!Uint8Array}
@@ -4838,7 +4838,7 @@ const methodInfo_Server_Logout = new grpc.web.AbstractClientBase.MethodInfo(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.LoginResponse.deserializeBinary
+  im_message_pb.LoginResponse.deserializeBinary
 );
 
 
@@ -4890,8 +4890,8 @@ proto.im.ServerPromiseClient.prototype.logout =
 const methodDescriptor_Server_HeartBeat = new grpc.web.MethodDescriptor(
   '/im.Server/HeartBeat',
   grpc.web.MethodType.UNARY,
-  message_pb.HeartBeatRequest,
-  message_pb.HeartBeatResponse,
+  im_message_pb.HeartBeatRequest,
+  im_message_pb.HeartBeatResponse,
   /**
    * @param {!proto.im.HeartBeatRequest} request
    * @return {!Uint8Array}
@@ -4899,7 +4899,7 @@ const methodDescriptor_Server_HeartBeat = new grpc.web.MethodDescriptor(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.HeartBeatResponse.deserializeBinary
+  im_message_pb.HeartBeatResponse.deserializeBinary
 );
 
 
@@ -4910,7 +4910,7 @@ const methodDescriptor_Server_HeartBeat = new grpc.web.MethodDescriptor(
  *   !proto.im.HeartBeatResponse>}
  */
 const methodInfo_Server_HeartBeat = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.HeartBeatResponse,
+  im_message_pb.HeartBeatResponse,
   /**
    * @param {!proto.im.HeartBeatRequest} request
    * @return {!Uint8Array}
@@ -4918,7 +4918,7 @@ const methodInfo_Server_HeartBeat = new grpc.web.AbstractClientBase.MethodInfo(
   function(request) {
     return request.serializeBinary();
   },
-  message_pb.HeartBeatResponse.deserializeBinary
+  im_message_pb.HeartBeatResponse.deserializeBinary
 );
 
 
@@ -5090,138 +5090,6 @@ proto.im.RtcPromiseClient.prototype.room =
       request,
       metadata || {},
       methodDescriptor_Rtc_Room);
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.im.ContrastClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @param {string} hostname
- * @param {?Object} credentials
- * @param {?Object} options
- * @constructor
- * @struct
- * @final
- */
-proto.im.ContrastPromiseClient =
-    function(hostname, credentials, options) {
-  if (!options) options = {};
-  options['format'] = 'text';
-
-  /**
-   * @private @const {!grpc.web.GrpcWebClientBase} The client
-   */
-  this.client_ = new grpc.web.GrpcWebClientBase(options);
-
-  /**
-   * @private @const {string} The hostname
-   */
-  this.hostname_ = hostname;
-
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.im.GetVersionsRequest,
- *   !proto.im.GetVersionsResponse>}
- */
-const methodDescriptor_Contrast_GetVersions = new grpc.web.MethodDescriptor(
-  '/im.Contrast/GetVersions',
-  grpc.web.MethodType.UNARY,
-  message_pb.GetVersionsRequest,
-  message_pb.GetVersionsResponse,
-  /**
-   * @param {!proto.im.GetVersionsRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  message_pb.GetVersionsResponse.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.im.GetVersionsRequest,
- *   !proto.im.GetVersionsResponse>}
- */
-const methodInfo_Contrast_GetVersions = new grpc.web.AbstractClientBase.MethodInfo(
-  message_pb.GetVersionsResponse,
-  /**
-   * @param {!proto.im.GetVersionsRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  message_pb.GetVersionsResponse.deserializeBinary
-);
-
-
-/**
- * @param {!proto.im.GetVersionsRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.im.GetVersionsResponse)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.im.GetVersionsResponse>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.im.ContrastClient.prototype.getVersions =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/im.Contrast/GetVersions',
-      request,
-      metadata || {},
-      methodDescriptor_Contrast_GetVersions,
-      callback);
-};
-
-
-/**
- * @param {!proto.im.GetVersionsRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.im.GetVersionsResponse>}
- *     A native promise that resolves to the response
- */
-proto.im.ContrastPromiseClient.prototype.getVersions =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/im.Contrast/GetVersions',
-      request,
-      metadata || {},
-      methodDescriptor_Contrast_GetVersions);
 };
 
 

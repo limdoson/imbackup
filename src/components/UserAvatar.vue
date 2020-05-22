@@ -1,7 +1,7 @@
 <template>
     <el-image
         slot="reference"
-        :src="$store.state.userModule.userInfo.icon"
+        :src="imgPath"
         fit="cover"
         :style="{width : imgWidth}"
         style="border-radius : 4px">

@@ -92,6 +92,11 @@
                         })
                         this.$router.replace('/')
                     }
+                }).catch(err =>{
+                    this.$message({
+                        message : '登录失败，请稍后重试...',
+                        type : 'error'
+                    })
                 })
 
             },

@@ -57,7 +57,7 @@ export function ApplyFriend(metadata, account, applyMsg) {
 	let request = new FriendRequest()
 	request.setFaccid(account) 
 	request.setMsg(applyMsg)
-	request.setApplyId(61810)
+	// request.setApplyId(61810)
 	request.setAddType(FriendAddType.APPLY)
 
   	return new Promise((resolve, reject) => {
@@ -74,11 +74,12 @@ export function ApplyFriend(metadata, account, applyMsg) {
 }
 
 // 同意添加好友申请
-export function PassFriendApply(metadata, fromAccid) {
+export function PassFriendApply(metadata, messageItem) {
 	let request = new FriendRequest()
-	request.setFaccid(fromAccid)
+	request.setAccid(metadata.accid)
+	request.setFaccid(messageItem.from)
 	request.setAddType(FriendAddType.PASS)
-
+	request.setApplyId(messageItem.applyId)
   	return new Promise((resolve, reject) => {
 		friendActClient.pass(request, metadata, (err, response) => {
 			rpcLog('PassFriendApply', request, err, response)
@@ -93,10 +94,12 @@ export function PassFriendApply(metadata, fromAccid) {
 }
 
 // 拒绝添加好友申请
-export function RejectFriendApply(metadata, fromAccid) {
+export function RejectFriendApply(metadata, message) {
 	let request = new FriendRequest()
-	request.setFaccid(fromAccid)
+	request.setAccid(message.from)
+	request.setFaccid(metadata.accid)
 	request.setAddType(FriendAddType.REJECT)
+	request.setApplyId(message.applyId)
 
 	return new Promise((resolve, reject) => {
 		friendActClient.reject(request, metadata, (err, response) => {

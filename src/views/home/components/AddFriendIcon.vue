@@ -17,7 +17,7 @@
             :before-close='cancelApply'>
             <header class="s-b">
                 <div class="f-s">
-                    <user-avatar :img-path='addUserInfo.icon' img-width='60px' style="margin-right:15px"></user-avatar>
+                    <user-avatar :img-path='addUserInfo.avatar' img-width='60px' style="margin-right:15px"></user-avatar>
                     {{addUserInfo.name}}
                 </div>
                 <el-button @click="addUserForm = true"  size="mini">添加好友</el-button>
@@ -136,6 +136,9 @@
             },
             //发送好友申请
             sendFriendApply () {
+                /* 
+                    @params(当前用户的信息，申请添加的好友的accid，提交的信息)
+                */
                 ApplyFriend(this.$store.state.userModule.config, this.addUserInfo.accid, this.applyMsg).then((result)=>{
                     if (result.baseinfo.code == 400) {
                         this.$message({message: result.baseinfo.msg, type: 'error'})

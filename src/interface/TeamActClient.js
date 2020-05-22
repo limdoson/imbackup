@@ -1,13 +1,13 @@
-import { GRPC_HOSTNAME, rpcLog } from '@/rpc/config'
+import { rpcLog } from '@itf/config'
 import {
   GetMemberListRequest, UpdateTeamRequest, PullSpecifiedRequest, AddMemberRequest, CreateTeamRequest, UpdateTeamNickRequest,
     SetManagerRequest, ChangeOwnerRequest, TeamChangeOwnerLeaveType, TeamMemberMuteRequest, KickMemberRequest, LeaveTeamRequest,
     TeamAddFriendRequest, UpdateAnnouncementRequest
-} from '@/rpc/common/common_pb'
-import { AcceptTeamInviteRequest, RejectTeamInviteRequest } from '@/rpc/im/message_pb'
-import { TeamActClient } from '@/rpc/im/im_grpc_web_pb'
+} from '@itf/common/common_pb'
+import { AcceptTeamInviteRequest, RejectTeamInviteRequest } from '@itf/im/message_pb'
+import { TeamActClient } from '@itf/im/im_grpc_web_pb'
 
-let teamActClient = new TeamActClient(GRPC_HOSTNAME, null, null)
+let teamActClient = new TeamActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
 export function CreateTeam(metadata, name, accids) {
 	let req = new CreateTeamRequest()

@@ -1,4 +1,4 @@
-// source: common.proto
+// source: common/common.proto
 /**
  * @fileoverview
  * @enhanceable
@@ -32,7 +32,6 @@ goog.exportSymbol('proto.common.Chunk', null, global);
 goog.exportSymbol('proto.common.CommonFriendSetting', null, global);
 goog.exportSymbol('proto.common.CommonUserInfo', null, global);
 goog.exportSymbol('proto.common.CompleteTeamInfo', null, global);
-goog.exportSymbol('proto.common.ContrastVersion', null, global);
 goog.exportSymbol('proto.common.CreateTeamRequest', null, global);
 goog.exportSymbol('proto.common.CreateTeamResponse', null, global);
 goog.exportSymbol('proto.common.DelFriendRequest', null, global);
@@ -26721,16 +26720,6 @@ proto.common.EventCode = {
   EVENTSINGLEMSG: 9001,
   EVENTTEAMMSG: 9002,
   EVENTATTENTIONMSG: 9003
-};
-
-/**
- * @enum {number}
- */
-proto.common.ContrastVersion = {
-  FRIENDLISTVERSION: 0,
-  APPLYLISTVERSION: 1,
-  TEAMLISTVERSION: 2,
-  SESSIONLISTVERSION: 3
 };
 
 /**
