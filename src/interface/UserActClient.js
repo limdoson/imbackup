@@ -63,6 +63,8 @@ export function GetMyFriends(metadata) {
     })
 }
 
+
+//拉取两个用户或群的回话记录
 export function PullSessionList(metadata) {
     let req = new PullSessionListRequest()
     req.setAccid(metadata.accid)
@@ -123,7 +125,6 @@ export function UpdateMyInfo(metadata, value) {
 	return new Promise((resolve, reject) => {
 		userActClient.updateUser(request, metadata, (err, response) => {
 		rpcLog('updateMyInfo', request, err, response)
-
 			if (err) {
 				reject(err)
 			} else {
@@ -208,6 +209,7 @@ export function GetUser(metadata, account) {
 	})
 }
 
+//获取消息中心内容
 export function GetAppliesList(metadata) {
 	let request = new GetApplyListRequest()
 

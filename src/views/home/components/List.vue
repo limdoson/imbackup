@@ -32,13 +32,15 @@
             <!-- 好友列表 && 群列表-->
             <template v-if='$store.state.userModule.list && $store.state.userModule.list.length' >
                 <template v-for='item in $store.state.userModule.list'>
-                    <li class="f-s"  :key='item.accid' v-if='item.isShow'>
-                        <img :src="firendAvatar(item)" alt="">
+                    <li class="f-s"  :key='item.accid' v-if='item.isShow' @click='getChartsContent(item)'>
+                        <el-badge :value='chartsUnReadValue(item)'>
+                            <img :src="firendAvatar(item)" alt="好友头像">
+                        </el-badge>
                         <span>
                             <template v-if='$store.state.tab == `contacts`'>
                                 {{item | showName}}
                             </template>
-                            <template v-if='$store.state.tab == `teams`'>
+                            <template v-if='$store.state.tab == `teams` && item.base'>
                                 {{item.base.name ? item.base.name : '无'}}
                             </template>
                         </span>
@@ -73,11 +75,18 @@
             :visible.sync="msgOpen"
             width="400px">
             <ul class="system-msg-list scroll-y-list">
-                <li class="s-b" v-for='item in $store.state.messageModule.noticeCenter.systemMsg' :key='item.timestamp'>
+                <li class="s-b" v-for='item in $store.state.messageModule.noticeCenter.systemMsg' :key='item.applyId'>
                     <user-avatar :img-path='item.fromAvatar' img-width='40px'></user-avatar>
                     <div class="form-info">
-                        <h1>来自{{item.fromNick}}的好友申请</h1>
-                        <p>申请信息：{{item.msg || '-'}}</p>
+                        <!-- 根据 数据的type来区分是加好友还是拉进群 -->
+                        <template v-if='item.type == ApplyType.T2P'>
+                            <h1>{{item.fromNick}}邀请你进群</h1>
+                        </template>
+                        <template v-else>
+                            <h1>来自{{item.fromNick}}的好友申请</h1>
+                            <p>申请信息：{{item.msg || '-'}}</p>
+                        </template>
+                        
                     </div>
                     <template v-if='item.status == FriendAddType.ADD || item.status == FriendAddType.APPLY'>
                         <div class="handle-btns">
@@ -109,8 +118,9 @@
 
     import {ApplyType} from "@itf/common/common_pb"
     import {PassFriendApply, RejectFriendApply} from "@itf/FriendActClient"
-    import {AcceptInvite, RejectInvite} from "@itf/TeamActClient"
+    import { AcceptInvite, RejectInvite } from "@itf/TeamActClient"
     import { FriendAddType } from "@itf/common/common_pb"
+    import {PullSessionList} from '@itf/UserActClient'
     import userAvatar from '@c/UserAvatar'
     export default {
         components : {
@@ -119,6 +129,7 @@
         data () {
             return {
                 FriendAddType,
+                ApplyType,
                 searchText : null,//搜索关键字
                 searchLast : null,//上一次的搜索关键字
                 msgOpen : false,//是否打开消息中心列表dialog
@@ -186,7 +197,20 @@
                             this.$store.dispatch('updateNoticeStatus', notice, {root : true})
                         })
                 } else if (notice.type == ApplyType.T2P) { //通过群加好友
+                    //接受群邀请
+                    AcceptInvite(this.$store.state.userModule.config, notice)
+                    .then(result => {
+                        let baseinfo = result.baseinfo
 
+                        if (baseinfo.code == 200) {
+                            this.$message({type: 'success', message: '同意操作成功'})
+                        } else {
+                            this.$message({type: 'error', message: baseinfo.msg})
+                        }
+
+                        notice.status = result.applyStatus
+                        this.$store.dispatch('updateNoticeStatus', notice, {root : true})
+                    })
                 }
             },
             //拒绝好友申请
@@ -207,6 +231,24 @@
                         this.msgOpen = false;
 
                     })
+                } else if (notice.type == ApplyType.T2P) {
+                    //拒绝群邀请
+                    RejectInvite(this.$store.state.userModule.config, notice)
+                    .then((result) => {
+                        let baseinfo = result.baseinfo
+
+                        if (baseinfo.code == 200) {
+                            this.$message({type: 'success', message: '拒绝操作成功'})
+                        } else {
+                            this.$message({type: 'error', message: baseinfo.msg})
+                        }
+
+                        notice.status = result.applyStatus
+                        this.$store.dispatch('updateNoticeStatus', notice)
+                    })
+                    .catch(() => {
+                        this.$message({type: 'error', message: '拒绝操作失败'})
+                    })
                 }
             },
             //点击消息中心，如果有消息则打开消息列表
@@ -214,6 +256,19 @@
                 if (this.$store.state.messageModule.noticeCenter.systemMsg.length) {
                     this.msgOpen = true
                 }
+            },
+            //点击好友或群，拉群聊天列表
+            getChartsContent (item) {
+                this.$store.commit('userModule/setChartItem', item)
+                // console.log(item)
+                // PullSessionList(item)
+                // .then(res => {
+                //     console.log(res)
+                // })
+            },
+            //未读信息获取，如果是0则返回null
+            chartsUnReadValue (item) {
+                return item.unread ? item.unread : null
             }
         }
     }

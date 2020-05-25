@@ -5,7 +5,9 @@ const state = {
     noticeCenter : {
         systemMsg : [],//系统通知
         unReadCount : 0,//未读消息数量
-    }
+    },
+    //用户在聊天框内输入的内容
+    userInput : '123',
 }
 
 const mutations = {
@@ -83,6 +85,10 @@ const mutations = {
         })
         // eventBus.$emit('force-update-notice')
     },
+    //用户在聊天框中输入内容
+    changeUserInput (state, input) {
+        state.userInput = input
+    }
 }
 
 const actions = {

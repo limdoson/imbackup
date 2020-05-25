@@ -48,9 +48,28 @@
                         size="small" 
                         v-model.trim='applyMsg'
                         ></el-input>
-                    <el-button type='primary' size='small' :disabled="disabledInputMsg" @click='sendFriendApply'>发 送</el-button>
+                    <el-button type='primary' size='small' :disabled="disabledSendApply" @click='sendFriendApply'>发 送</el-button>
                 </div>
             </div>
+        </el-dialog>
+        <!-- 创建群dialog -->
+        <el-dialog
+            :visible.sync="showCreateTeam" 
+            width='650px'
+            append-to-body 
+            :before-close='cancelCreateTeam'
+            >
+            <el-transfer
+                :titles="['联系人', '加入群聊']"
+                filterable
+                v-model='selectedContacts'
+                :filter-method = 'createTeamFilterMedhod'
+                filter-placeholder="请输入好友名称"
+                :data='$store.state.userModule.contacts'></el-transfer>
+            <span slot="footer" class="dialog-footer">
+                <el-button @click="cancelCreateTeam" size='mini'>取 消</el-button>
+                <el-button type="primary" @click="createTeamHandle()" size='mini' :disabled="disabledCreateTeam">确 定</el-button>
+            </span>
         </el-dialog>
     </div>
     
@@ -58,6 +77,7 @@
 <script>
     import { SearchUser } from '@itf/UserActClient'
     import { ApplyFriend } from '@itf/FriendActClient'
+    import { CreateTeam } from '@itf/TeamActClient'
     import userAvatar from '@c/UserAvatar'
     export default {
         components : {
@@ -65,22 +85,34 @@
         },
         data () {
             return {
+                /* 
+                    添加好友相关
+                 */
                 showSearchUser : false,//是否显示搜索用户结果dialog
                 addUserInfo : {
                     icon : null
                 },//搜索出结果时的用户信息
                 addUserForm : false,//是否显示输入申请好友信息的节点
                 applyMsg : '',//申请时填入得信息
+                /* 
+                    创建群相关
+                 */
+                showCreateTeam : false,//是否显示创建群dialog
+                selectedContacts : [],//已选的联系人
+                createTeamFilterMedhod (query, item) {//创建群中的搜索函数
+                    return item.label.indexOf(query) > -1
+                },
+                
             }
         },
         computed : {
-            disabledInputMsg () {
+            //是否允许点击发送好友申请按钮
+            disabledSendApply () {
                 return !(this.applyMsg && this.applyMsg.length)
-                // if () {
-                //     return false;
-                // } else {
-                //     return true;
-                // }
+            },
+            //是否允许点击创建群中的确认
+            disabledCreateTeam () {
+                return !this.selectedContacts.length
             }
         },
         methods : {
@@ -118,7 +150,6 @@
                                 break;
                         }
                         this.showSearchUser = true;
-                        console.log(this.addUserInfo)
                     }).catch((r)=>{
                         console.log(r)
                     })
@@ -151,8 +182,52 @@
                     this.$message({message: '好友添加失败！', type: 'error'})
                 })
             },
+            //点击创建群按钮
             createTeam () {
-                
+                if (this.$store.state.userModule.contacts.length == 0) {
+                    this.$message({
+                        message : '您还没有任何好友，无法创建群聊',
+                        type : 'error'
+                    })
+                    return;
+                }
+                this.showCreateTeam = true
+            },
+            //创建群逻辑
+            createTeamHandle() {
+                CreateTeam(
+                    this.$store.state.userModule.config,//发起者的信息
+                    this.getTeamName(),//群名
+                    this.selectedContacts,//群成员的accid集合
+                ).then(res => {
+                    let baseinfo = res.baseinfo
+                    if (baseinfo.code === "fail") {
+                        this.$message({message: baseinfo.msg, type: 'error'})
+                    } else {
+                        this.$store.commit('userModule/createTeam', res.teaminfo)
+                        this.$message({message: '群聊创建成功', type: 'success'})
+                        this.showCreateTeam = false;
+                        this.selectedContacts = [] // 重置选择框（必须）
+                    }
+                    console.log(res)
+                })
+            },
+            //取消创建群
+            cancelCreateTeam () {
+                //重置相关数据
+                this.selectedContacts = []
+                this.showCreateTeam = false;
+            },
+            //获取群名称工具函数
+            getTeamName(){
+                let memberNames = []
+                memberNames.push(this.$store.state.userModule.userInfo.name);
+                this.selectedContacts.map(item => {
+                    if (this.$store.state.userModule.usersMap[item].name) {
+                        memberNames.push(this.$store.state.userModule.usersMap[item].name)
+                    }
+                })
+                return memberNames.join('、')
             }
         }
     }

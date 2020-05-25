@@ -5,7 +5,11 @@ import { GetSubscribe } from "@itf/SubscribeClient";
 import { GetMyInfo, GetMyTeamList, GetUsersByAccids, GetUser, PullSessionList, GetMyFriends } from "@itf/UserActClient";
 import { SessionTypes, EventCode, FriendAddType } from "@itf/common/common_pb"
 import { showName } from '@u/store'
-
+import {
+	SESSION_TYPE_TEAM,
+	MESSAGE_STATUS_RECALLED,
+	MESSAGE_STATUS_FRIEND_RECALLED
+} from "@u/constants"
 
 const state = {
 	config : {
@@ -21,6 +25,14 @@ const state = {
 		icon: null,
 		gender: 0,
 	},
+	/*
+		用户信息的映射
+		{
+			accid : {
+
+			}
+		}
+	*/
 	usersMap : {
 
 	},
@@ -33,7 +45,9 @@ const state = {
 	//全部群聊
 	teams : [],
 	//前端用来显示的联系人列表，根据tab来区分是显示联系人还是群聊
-	list : null
+	list : null,
+	//当前聊天的对象(人或群)
+	chartItem : null,
 }
 
 const mutations = {
@@ -118,15 +132,31 @@ const mutations = {
 					// 消息未读数量
 					unread: 0,
 				}
-				state.contacts.push(_contact)
+				state.contacts.push(_contact);
+
+				//将联系人数据整理后存入userSmap
+
 			})
 		}
+	},
+	/* 
+		初始化用户信息映射usersMap
+	*/
+	initUsersMap(state) {
+		state.contacts.map((item) => {
+			state.usersMap[item.accid] = {
+				accid: item.accid,
+				name: item.name,
+				alias: item.alias,
+				teamNick: '',
+				icon: item.avatar,
+			}
+		})
 	},
 	/* 
 		tab切换时触发该mut
 	*/
 	tabChange (state, input) {
-		console.log(input)
 		if (input.tab == 'chats' ) {
 			state.chats = input.data;
 			state.list = input.data
@@ -136,7 +166,7 @@ const mutations = {
 			state.teams = input.data
 			state.list = input.data
 		}
-		
+		state.chartItem = null
 	},
 	/* 
 		搜索联系人
@@ -195,7 +225,22 @@ const mutations = {
 
 		// state.tab = 'chats'
 		// state.item = newContact
-	}
+	},
+	/* 
+		创建群
+	*/
+	createTeam (state, input) {
+		// 新群更多字段补充
+		input.isShow = true
+		input.type = SESSION_TYPE_TEAM
+		input.accid = input.teamId
+		input.showName = input.name
+		state.teams.unshift(input)
+	},
+	//设置当前的聊天对象
+	setChartItem (state, input) {
+		state.chartItem = input
+	},
 }
 
 const actions = {
@@ -263,7 +308,7 @@ const actions = {
 	getFriends ({commit, state}) {
 		GetMyFriends(state.config).then( res => {
 			commit('initContacts', res.friendsinfoList);
-			// commit('initUsersMap')
+			commit('initUsersMap')
 		})
 	},
 	/* 

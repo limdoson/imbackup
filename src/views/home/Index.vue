@@ -8,7 +8,7 @@
                 <list></list>
             </div>
             <div class="chart">
-
+                <chart-container v-if='$store.state.userModule.chartItem'></chart-container>
             </div>
         </div>
     </div>
@@ -16,10 +16,12 @@
 <script>
     import leftMenu from './components/LeftMenu'
     import List from './components/List'
+    import ChartContainer from './components/ChartContainer'
     export default {
         components : {
             leftMenu,
-            List
+            List,
+            ChartContainer
         }
     }
 </script>

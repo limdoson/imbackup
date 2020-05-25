@@ -38,7 +38,26 @@ let maps = new Map([
     [
         EventCode.EVENTREJECTFRIENDAPPLY, // 拒绝好友申请事件
         ({ commit, dispatch, state }, result) => {
+            // commit('')
+        }
+    ],
 
+    /* 
+        群相关
+    */
+    //收到他人把我拉进群
+    [
+        EventCode.EVENTTEAMADDMEMBER,
+        ({commit, dispatch, state}, result) => {
+            console.log('收到群邀请', JSON.parse(result.attach))
+        }
+    ],
+    //创建群
+    [
+        EventCode.EVENTCREATETEAM, // 新建群
+        ({ commit }, result) => {
+            alert('new team')
+            commit('createTeam', JSON.parse(result.ext))
         }
     ]
 ])

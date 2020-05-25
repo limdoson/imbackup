@@ -51,17 +51,19 @@
             title='修改信息'
             width='300px'>
             <el-form size='mini' inline label-width="60px" :model="userInfo" :rules='rules' ref='editUserInfoForm'>
-                <!-- <el-form-item label='头像'>
+                <el-form-item label='头像'>
                     <el-upload
                         class="avatar-uploader"
-                        action="https://jsonplaceholder.typicode.com/posts/"
+                        action=""
+                        accept="image/*"
                         :show-file-list="false"
                         :on-success="handleAvatarSuccess"
-                        :before-upload="beforeAvatarUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                        :before-upload="beforeAvatarUpload"
+                        :http-request="avatarUpload">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width: 60px">
                         <user-avatar v-else img-width='50px'></user-avatar>
                     </el-upload>
-                </el-form-item> -->
+                </el-form-item>
                 <el-form-item label='昵称' prop='name'>
                     <el-input placeholder="请输入昵称" v-model.trim="userInfo.name" style="width:100%"></el-input>
                 </el-form-item>
@@ -87,7 +89,7 @@
     import cityData from '@u/cityData'
     import { UpdateMyInfo,UPDATE_MY_AVATAR } from '@itf/UserActClient'
     import { CommonUserInfo } from '@itf/common/common_pb'
-
+    import { UploadFile } from '@itf/UploadFile'
     export default {
         components :{
             userAvatar
@@ -119,6 +121,7 @@
                         { required: true, message: '请填写昵称', trigger: 'blur' },
                     ],
                 },
+                imageUrl : require('@ast/images/default_avatar.jpg'),
                 cityData,//城市数据源
                 //完整的城市数据数组
                 fullCityData : [this.$store.state.userModule.userInfo.prov, this.$store.state.userModule.userInfo.city, this.$store.state.userModule.userInfo.area]
@@ -139,14 +142,11 @@
             //更新逻辑
             updateHandle () {
                 let userInfo = new CommonUserInfo();
-
                 userInfo.setName(this.userInfo.name)
                 userInfo.setGender(this.userInfo.gender)
                 userInfo.setProv(this.fullCityData.length ? this.fullCityData[0] : '')
                 userInfo.setCity(this.fullCityData.length ? this.fullCityData[1] : '')
                 userInfo.setArea(this.fullCityData.length ? this.fullCityData[2] : '')
-
-
                 UpdateMyInfo(this.$store.state.userModule.config, userInfo)
                 .then(res =>{
                     if (res.baseinfo.code == 200) {
@@ -166,6 +166,24 @@
                         })
                     }
                 })
+            },
+            beforeAvatarUpload (file) {
+                const limit = file.size / 1024 / 1024 < process.env.VUE_APP_LIMIT_UPLOAD_SIZE;
+
+                if (!limit) {
+                    this.$message.error('上传图片不得超过50M')
+                }
+                // UploadFile()
+                return limit;
+            },
+            //图片上传
+            avatarUpload (file) {
+                UploadFile(this.$store.state.userModule.config,file)
+                // console.log(reader.readAsDataURL(_file))
+            },
+            //上传成功回调
+            handleAvatarSuccess (res) {
+                console.log(res)
             }
         }
     }

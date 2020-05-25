@@ -2,7 +2,7 @@ import { GRPC_HOSTNAME, rpcLog } from '@/rpc/config'
 import { HandleTeamInviteRequest, RecallMsgInfo, HandleMsgRequest } from '@/rpc/common/common_pb'
 import { MsgActClient } from '@/rpc/im/im_grpc_web_pb'
 
-let msgActClient = new MsgActClient(GRPC_HOSTNAME, null, null)
+let msgActClient = new MsgActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
 // 撤回消息
 export function RecallMsg(metadata, from, to, uuid, msgType) {

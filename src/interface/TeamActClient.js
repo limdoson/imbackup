@@ -9,10 +9,12 @@ import { TeamActClient } from '@itf/im/im_grpc_web_pb'
 
 let teamActClient = new TeamActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
-export function CreateTeam(metadata, name, accids) {
-	let req = new CreateTeamRequest()
+export function CreateTeam(metadata, name, accids, magree =1) {
+    let req = new CreateTeamRequest()
+    req.setOwner(metadata.accid)
 	req.setTname(name)
-	req.setMembersList(accids)
+    req.setMembersList(accids)
+    req.setMagree(magree)
 	
 	return new Promise((resolve, reject) => {
         teamActClient.createTeam(req, metadata, (err, response) => {
@@ -239,7 +241,6 @@ export function AddFriend(metadata, tid, openId, msg) {
 }
 
 export function UpdateTeamAnnouncement(metadata, tid, announcement) {
-    console.log(announcement)
     let req = new UpdateAnnouncementRequest()
     req.setTid(tid)
     req.setAnnouncement(announcement)
@@ -256,9 +257,10 @@ export function UpdateTeamAnnouncement(metadata, tid, announcement) {
     })
 }
 
-export function AcceptInvite(metadata, applyId) {
+export function AcceptInvite(metadata, notice) {
     let req = new AcceptTeamInviteRequest()
-    req.setApplyId(applyId)
+    // req.setAccid(metadata.accid)
+    req.setApplyId(notice.applyId)
 
     return new Promise((resolve, reject) => {
         teamActClient.acceptInvite(req, metadata, (err, response) => {
@@ -271,10 +273,11 @@ export function AcceptInvite(metadata, applyId) {
         })
     })
 }
-
-export function RejectInvite(metadata, applyId) {
+//拒绝群邀请
+export function RejectInvite(metadata, notice) {
     let req = new RejectTeamInviteRequest()
-    req.setApplyId(applyId)
+    // req.setAccid(metadata.accid)
+    req.setApplyId(notice.applyId)
 
     return new Promise((resolve, reject) => {
         teamActClient.rejectInvite(req, metadata, (err, response) => {
@@ -287,158 +290,3 @@ export function RejectInvite(metadata, applyId) {
         })
     })
 }
-
-/*// GetTeamApplyList
-export function GetTeamApplyList(metadata, tid) {
-    let req = new GetTeamRequest()
-    req.setTid(tid)
-
-    return new Promise((resolve, reject) => {
-        teamActClient.getTeamApplyList(req, metadata, (err, response) => {
-            rpcLog('Dissolve', req, err, response)
-            if (err) {
-                reject(err)
-            } else {
-                resolve(response.toObject())
-            }
-        })
-    })
-}*/
-
-/*
-
-// 根据 teamId 获取群设置信息
-export function GetTeamSetting(metadata, teamId) {
-  let request = new GetTeamRequest()
-  request.setTeamId(teamId)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.getTeamItem(request, metadata, (err, response) => {
-      rpcLog('getTeamItem', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 创建群聊
-export function CreateTeam(metadata, teamName, ownerId, accids) {
-  let request = new CreateTeamInfo()
-  request.setTeamName(teamName)
-  request.setOwner(ownerId)
-  request.setAccidsList(accids)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.createTeam(request, metadata, (err, response) => {
-      rpcLog('createTeam', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 拉取好友入群
-export function RemoveTeamMembers(metadata, teamId, openId) {
-  let request = new TeamMemberActInfo()
-  request.setTeamId(teamId)
-  request.setAccids([openId])
-
-  return new Promise((resolve, reject) => {
-    teamActClient.removeTeamMembers(request, metadata, (err, response) => {
-      rpcLog('removeTeamMembers', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 修改群名字
-export function UpdateTeamName(metadata, teamId, newName) {
-  let request = new UpdateTeamInfo()
-  request.setTeamId(teamId)
-  request.setName(newName)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.updateTeam(request, metadata, (err, response) => {
-      rpcLog('updateTeam', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 修改群介绍
-export function UpdateTeamIntro(metadata, teamId, newIntro) {
-  let request = new UpdateTeamInfo()
-  request.setTeamId(teamId)
-  request.setIntro(newIntro)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.updateTeam(request, metadata, (err, response) => {
-      rpcLog('updateTeam', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 解散群聊
-export function DissolveTeam(metadata, teamId) {
-  let request = new QuitTeam()
-  request.setTeamId(teamId)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.dissolveTeam(request, metadata, (err, response) => {
-      rpcLog('dissolveTeam', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-// 群禁言和移除禁言
-export function MarkBanded(metadata, teamId, openId, value) {
-  let request = new GetTeamRequest()
-  request.setTeamId(teamId)
-  request.setTo(openId)
-  request.setValue(value)
-
-  return new Promise((resolve, reject) => {
-    teamActClient.markBanded(request, metadata, (err, response) => {
-      rpcLog('markBanded', request, err, response)
-
-      if (err) {
-        reject(err)
-      } else {
-        resolve(response.toObject())
-      }
-    })
-  })
-}
-
-
-*/
