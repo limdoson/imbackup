@@ -20,7 +20,7 @@
                     <user-avatar :img-path='addUserInfo.avatar' img-width='60px' style="margin-right:15px"></user-avatar>
                     {{addUserInfo.name}}
                 </div>
-                <el-button @click="addUserForm = true"  size="mini">添加好友</el-button>
+                <!-- <el-button @click="addUserForm = true"  size="mini">添加好友</el-button> -->
             </header>
             <div class="friend-other-info">
                 <h1 class="center">个人信息</h1>
@@ -35,6 +35,7 @@
                 </p>
             </div>
             <!-- 填写好友申请信息 -->
+            <!-- 如果验证方式为MESSAGE -->
             <div class="input-apply-msg" v-if='addUserForm'>
                 <div class="s-b">
                     <span>
@@ -44,11 +45,28 @@
                 </div>
                 <div class="f-s">
                     <el-input 
-                        placeholder="请输入好友信息" 
+                        placeholder="请输入申请信息" 
                         size="small" 
                         v-model.trim='applyMsg'
                         ></el-input>
                     <el-button type='primary' size='small' :disabled="disabledSendApply" @click='sendFriendApply'>发 送</el-button>
+                </div>
+            </div>
+            <!-- 如果验证方式为QUESTION -->
+             <div class="input-apply-msg" v-if='showInputAnswer'>
+                <div class="s-b">
+                    <span>
+                        请回答好友设置的验证问题：{{friendAddSetting.addFriendIssue}}
+                    </span>
+                    <el-button type='text' size='mini' @click='cancelApply'>取消</el-button>
+                </div>
+                <div class="f-s">
+                    <el-input 
+                        placeholder="请填写问题答案" 
+                        size="small" 
+                        v-model.trim='answer'
+                        ></el-input>
+                    <el-button type='primary' size='small' :disabled="disableCheckAnswer" @click='checkAnswer'>验 证</el-button>
                 </div>
             </div>
         </el-dialog>
@@ -75,9 +93,10 @@
     
 </template>
 <script>
-    import { SearchUser } from '@itf/UserActClient'
+    import { SearchUser, GetAddTypeSetting, CheckAddTypeSetting } from '@itf/UserActClient'
     import { ApplyFriend } from '@itf/FriendActClient'
     import { CreateTeam } from '@itf/TeamActClient'
+    import { FriendValidate } from '@itf/common/common_pb'
     import userAvatar from '@c/UserAvatar'
     export default {
         components : {
@@ -85,14 +104,23 @@
         },
         data () {
             return {
+                FriendValidate,
                 /* 
                     添加好友相关
                  */
                 showSearchUser : false,//是否显示搜索用户结果dialog
-                addUserInfo : {
+                addUserInfo : {//搜索出结果时的用户信息
                     icon : null
-                },//搜索出结果时的用户信息
+                },
+                //好友的添加好友设置参数
+                friendAddSetting : {
+                    addType : null,
+                    addFriendIssue : null,
+                    addFriendAnswer : null
+                },
+                answer : '',//申请者填写的问题答案
                 addUserForm : false,//是否显示输入申请好友信息的节点
+                showInputAnswer : false,//是否显示输入答案区域
                 applyMsg : '',//申请时填入得信息
                 /* 
                     创建群相关
@@ -113,6 +141,10 @@
             //是否允许点击创建群中的确认
             disabledCreateTeam () {
                 return !this.selectedContacts.length
+            },
+            //是否允许点击验证问题有效性
+            disableCheckAnswer () {
+                return !this.answer.length
             }
         },
         methods : {
@@ -122,8 +154,6 @@
                     confirmButtonText: '确定',
                     cancelButtonText: '取消',
                 }).then(({ value }) => {
-
-
                     //不能搜索自己的账号
                     if (value == this.$store.state.userModule.userInfo.showUserName) {
                         this.$message({message: '不能添加自己为好友哟', type: 'error'})
@@ -149,7 +179,28 @@
                                 this.addUserInfo.sex = "未知"
                                 break;
                         }
-                        this.showSearchUser = true;
+                        //请求好友的加好友配置
+                        GetAddTypeSetting(
+                            this.$store.state.userModule.config,
+                            null,
+                            r.result.accid
+                        ).then(res => {
+                            let {code, msg} = res.baseinfo;
+                            if (code != 200) {
+                                this.$message.error(msg);
+                                return;
+                            }
+                            this.friendAddSetting = res.addType;
+                           
+                            this.showSearchUser = true;
+                             //如果addType是message直接显示输入好友申请信息
+                            if (res.addType.addType === FriendValidate.MESSAGE) {
+                                this.addUserForm = true;
+                            } else if (res.addType.addType === FriendValidate.QUESTION) {
+                                this.showInputAnswer = true;
+                            }
+
+                        })
                     }).catch((r)=>{
                         console.log(r)
                     })
@@ -165,6 +216,30 @@
                 this.addUserForm = false;
                 this.applyMsg = ''
             },
+            //验证问题答案的有效性
+            checkAnswer() {
+                CheckAddTypeSetting(
+                    this.$store.state.userModule.config,
+                    this.addUserInfo.accid,
+                    this.answer
+                ).then(res =>{
+                    let {code , msg} = res.baseinfo;
+                    if (code != 200) {
+                        this.$message.error(msg);
+                        return;
+                    }
+                    //判断答案验证是否通过
+                    let {isPassed} = res;
+                    if (isPassed) {
+                        this.showInputAnswer = false;
+                        this.addUserForm = true;
+                    } else {
+                        this.$message.error('抱歉，您的答案验证未通过，请重新填写');
+                        this.answer = ''
+                        return;
+                    }
+                })
+            },
             //发送好友申请
             sendFriendApply () {
                 /* 
@@ -175,7 +250,9 @@
                         this.$message({message: result.baseinfo.msg, type: 'error'})
                     } else {
                         this.$message({message: '发送成功', type: 'success'})
-                        this.showSearchUser = false
+                        this.showSearchUser = false;
+                        this.answer = '';
+                        this.addUserForm = false;
                     }
                     
                 }).catch(()=>{

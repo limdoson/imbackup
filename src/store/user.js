@@ -60,6 +60,7 @@ const mutations = {
 		state.config.token = input.token
 		// TODO: 登录信息要保存在浏览器内, 避免刷新重新登录, 仅在登录后清楚认证
 		let loginInfo = JSON.stringify(input)
+		
 		sessionStorage.setItem('loginInfo', loginInfo);
 	},
 	/* 
@@ -69,10 +70,21 @@ const mutations = {
 		state.config.sign = ''
 		state.config.token = ''
 		sessionStorage.removeItem('loginInfo');
+		//清空相关数据
+		state.usersMap = {}
+		state.config = {
+			appid: 'test',
+			accid: null,
+			sign: null,
+			token: null
+		},
+		state.contacts = [];
+		state.teams = [];
+		state.chartItem = null;
+		state.charts = []
 	},
 	//设置用户信息
 	setUserInfo (state, input) {
-		console.log(input)
 		state.userInfo = input;
 		// 特殊: "我(自己)的" 信息映射
 		state.usersMap[state.userInfo.accid] = {
@@ -94,6 +106,14 @@ const mutations = {
 		state.userInfo.area = input.fullCityData[2] || ''
 	},
 	/* 
+		更新添加好友设置
+	*/
+	updateUserFriendSetting (state, input) {
+		state.userInfo.addType = input.addType;
+		state.userInfo.addFriendIssue = input.question;
+		state.userInfo.addFriendAnswer = input.answer;
+	},
+	/* 
 		初始化联系人
 	*/
 	initContacts (state, input) {
@@ -107,6 +127,7 @@ const mutations = {
 					avatar: contact.common.avatar,//头像
 					isBlack: contact.setting.isBlack,//是否在黑名单中
 					msgPrompt: contact.msgPrompt,
+					gender : contact.common.gender,//性别
 					name: showName(contact.common),//名称
 					sessionTop : contact.sessionTop,
 					sessionType: SessionTypes.SINGLE,
@@ -241,6 +262,37 @@ const mutations = {
 	setChartItem (state, input) {
 		state.chartItem = input
 	},
+	//用户发送消息,将消息存入联系人的messages字段中
+	sendMsgSuccess(state, message) {
+		//好友聊天
+		if (message.sessionType == SessionTypes.SINGLE) {
+			state.contacts.map(item => {
+				if (item.accid === message.to) {
+					item.messages = (item.messages === undefined) ? [] : item.messages;
+					item.messages.push(message)
+				}
+			})
+		}
+	},
+	//更新是否置顶
+	updateSessionTop (state, value) {
+		state.chartItem.top = value;
+		state.contacts.map(item => {
+			if (item.accid == state.chartItem.accid) {
+				item.top = value;
+			}
+			return item;
+		})
+	},
+	//删除好友
+	deleteFriend ( state, accid ) {
+		//从联系人列表中删除该好友
+		state.contacts = state.contacts.filter(item => {
+			return item.accid != accid
+		})
+		//删除当前聊天对象
+		state.chartItem = null;
+	},
 }
 
 const actions = {
@@ -267,7 +319,7 @@ const actions = {
 		//接受到消息
 		subscribe.on('data', response =>{
 			let result = response.toObject()
-			// console.log('ondata', result)
+			console.log('ondata', result)
 			EventHandler(context, result)
 		})
 		subscribe.on('status', function(status) {
@@ -298,7 +350,10 @@ const actions = {
 				city : res.selfinfo.common.city,
 				area : res.selfinfo.common.area,
 				sign : res.selfinfo.common.sign,
-				showUserName : res.selfinfo.showUsername
+				showUserName : res.selfinfo.showUsername,
+				addType : res.selfinfo.common.addType,
+				addFriendIssue : res.selfinfo.common.addFriendIssue,
+				addFriendAnswer : res.selfinfo.common.addFriendAnswer,
 			})
 		})
 	},

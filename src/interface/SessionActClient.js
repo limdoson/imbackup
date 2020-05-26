@@ -1,9 +1,9 @@
-import { GRPC_HOSTNAME, rpcLog } from '@/rpc/config'
-import { SessionActClient } from '@/rpc/im/im_grpc_web_pb'
-import { HandleSessionRequest, HandleMsgRequest } from '@/rpc/common/common_pb'
-import { NotifyMsgRequest, RecallRequest } from '@/rpc/im/message_pb'
+import {  rpcLog } from '@itf/config'
+import { SessionActClient } from '@itf/im/im_grpc_web_pb'
+import { HandleSessionRequest, HandleMsgRequest, SessionTypes, Switch } from '@itf/common/common_pb'
+import { NotifyMsgRequest, RecallRequest } from '@itf/im/message_pb'
 
-let sessAct = new SessionActClient(GRPC_HOSTNAME, null, null)
+let sessAct = new SessionActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
 export function Notify(metadata, msgId, sessionId) {
     let req = new NotifyMsgRequest()
@@ -23,12 +23,12 @@ export function Notify(metadata, msgId, sessionId) {
     })
 }
 
-export function setSessionTop(metadata, {sessionId, sessionType, switchs}) {
+//设置聊天置顶
+export function setSessionTop(metadata, sessionId, sessionType, switchValue) {
     let req = new HandleSessionRequest()
     req.setSessionId(sessionId)
     req.setSessionType(sessionType)
-    req.setSwitch(switchs)
-
+    req.setSwitch(Number(switchValue))
     return new Promise((resolve, reject) => {
         sessAct.top(req, metadata, (err, response) => {
             rpcLog('set session top:', req, err, response)

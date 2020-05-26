@@ -40,7 +40,7 @@
             </div>
         </div>
         <!-- 头像占位符 -->
-        <user-avatar style="margin-bottom: 15px" slot='reference'></user-avatar>
+        <user-avatar style="margin-bottom: 15px" slot='reference' :img-path='$store.state.userModule.userInfo.icon'></user-avatar>
         <!-- 标记用户信息 -->
         <el-dialog
             class="no-body-padding-dialog"

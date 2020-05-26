@@ -7,7 +7,7 @@ const state = {
         unReadCount : 0,//未读消息数量
     },
     //用户在聊天框内输入的内容
-    userInput : '123',
+    userInput : '',
 }
 
 const mutations = {
@@ -41,8 +41,6 @@ const mutations = {
                 }
             两者都需要在消息中心中展示，所以这里前端统一一下数据格式，暂定以拉取的applyList数据格式为准
         */
-
-        //如果消息中心中已经有来自同一申请人的消息，则直接覆盖，不重新生成一条信息.
         let notice = {
             applyId : input.apply.applyId,
             from : input.apply.from,
@@ -50,40 +48,39 @@ const mutations = {
             fromNick : input.apply.nick,
             status : input.apply.applyStatus,
             type : input.apply.applyType,
-            timestamp : input.apply.timestamp
+            timestamp : input.apply.timestamp,
+            msg : input.apply.msg
         }
+        //判断是否有存在同样的applyId，如果有则直接覆盖该条小心，而不再插入
         if (state.noticeCenter.systemMsg.length) {
-            let flag = state.noticeCenter.systemMsg.some(item => item.from === input.apply.from)
+            let flag = state.noticeCenter.systemMsg.some(item =>{
+                return item.applyId === notice.applyId
+            })
+
             if (flag) {
                 state.noticeCenter.systemMsg.map(item => {
-                    if (item.from === input.apply.from) {
-                        item.applyId =  input.apply.applyId,
-                        item.from =  input.apply.from,
-                        item.fromAvatar =  input.apply.avatar,
-                        item.fromNick =  input.apply.nick,
-                        item.status =  input.apply.applyStatus,
-                        item.type =  input.apply.applyType,
-                        item.timestamp =  input.apply.timestamp
+                    if (item.applyId === notice.applyId) {
+                        item = notice;
                     }
                     return item;
                 })
             } else {
-                state.noticeCenter.systemMsg.push(notice)
+                state.noticeCenter.systemMsg.unshift(notice)
             }
-
         } else {
-            
-            state.noticeCenter.systemMsg.push(notice)
+            state.noticeCenter.systemMsg = [notice]
         }
+
+        
     },
     //更新消息中心
     updateNoticeStatus: (state, notice) => {
-        state.noticeCenter.systemMsg.forEach((item, index) => {
-            if (item.from === notice.from && item.timestamp === notice.timestamp) {
-                state.noticeCenter.systemMsg[index].status = notice.status
+        console.log('updateNs', notice)
+        state.noticeCenter.systemMsg.forEach( (item) => {
+            if (item.applyId == notice.applyId) {
+                item.status = notice.status
             }
         })
-        // eventBus.$emit('force-update-notice')
     },
     //用户在聊天框中输入内容
     changeUserInput (state, input) {

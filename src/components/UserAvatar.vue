@@ -6,7 +6,7 @@
         :style="{width : imgWidth}"
         style="border-radius : 4px">
         <img 
-            :src="imgPath" 
+            :src="require('@ast/images/default_avatar.jpg')" 
             alt="用户头像" 
             class="default_avatar" 
             slot="error" >

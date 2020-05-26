@@ -73,52 +73,52 @@ proto.im.FriendActPromiseClient =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.AddFriendRequest,
+ *   !proto.im.AddFriendResponse>}
  */
 const methodDescriptor_FriendAct_Add = new grpc.web.MethodDescriptor(
   '/im.FriendAct/Add',
   grpc.web.MethodType.UNARY,
-  common_common_pb.FriendRequest,
-  common_common_pb.FriendResponse,
+  message_pb.AddFriendRequest,
+  message_pb.AddFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.AddFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.AddFriendResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.AddFriendRequest,
+ *   !proto.im.AddFriendResponse>}
  */
 const methodInfo_FriendAct_Add = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.FriendResponse,
+  message_pb.AddFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.AddFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.AddFriendResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.AddFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.FriendResponse)}
+ * @param {function(?grpc.web.Error, ?proto.im.AddFriendResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.FriendResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.AddFriendResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.FriendActClient.prototype.add =
@@ -133,11 +133,11 @@ proto.im.FriendActClient.prototype.add =
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.AddFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.FriendResponse>}
+ * @return {!Promise<!proto.im.AddFriendResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.FriendActPromiseClient.prototype.add =
@@ -153,52 +153,52 @@ proto.im.FriendActPromiseClient.prototype.add =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.ApplyFriendRequest,
+ *   !proto.im.ApplyFriendResponse>}
  */
 const methodDescriptor_FriendAct_Apply = new grpc.web.MethodDescriptor(
   '/im.FriendAct/Apply',
   grpc.web.MethodType.UNARY,
-  common_common_pb.FriendRequest,
-  common_common_pb.FriendResponse,
+  message_pb.ApplyFriendRequest,
+  message_pb.ApplyFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.ApplyFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.ApplyFriendResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.ApplyFriendRequest,
+ *   !proto.im.ApplyFriendResponse>}
  */
 const methodInfo_FriendAct_Apply = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.FriendResponse,
+  message_pb.ApplyFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.ApplyFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.ApplyFriendResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.ApplyFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.FriendResponse)}
+ * @param {function(?grpc.web.Error, ?proto.im.ApplyFriendResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.FriendResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.ApplyFriendResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.FriendActClient.prototype.apply =
@@ -213,11 +213,11 @@ proto.im.FriendActClient.prototype.apply =
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.ApplyFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.FriendResponse>}
+ * @return {!Promise<!proto.im.ApplyFriendResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.FriendActPromiseClient.prototype.apply =
@@ -233,52 +233,52 @@ proto.im.FriendActPromiseClient.prototype.apply =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.PassFriendRequest,
+ *   !proto.im.PassFriendResponse>}
  */
 const methodDescriptor_FriendAct_Pass = new grpc.web.MethodDescriptor(
   '/im.FriendAct/Pass',
   grpc.web.MethodType.UNARY,
-  common_common_pb.FriendRequest,
-  common_common_pb.FriendResponse,
+  message_pb.PassFriendRequest,
+  message_pb.PassFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.PassFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.PassFriendResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.PassFriendRequest,
+ *   !proto.im.PassFriendResponse>}
  */
 const methodInfo_FriendAct_Pass = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.FriendResponse,
+  message_pb.PassFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.PassFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.PassFriendResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.PassFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.FriendResponse)}
+ * @param {function(?grpc.web.Error, ?proto.im.PassFriendResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.FriendResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.PassFriendResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.FriendActClient.prototype.pass =
@@ -293,11 +293,11 @@ proto.im.FriendActClient.prototype.pass =
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.PassFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.FriendResponse>}
+ * @return {!Promise<!proto.im.PassFriendResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.FriendActPromiseClient.prototype.pass =
@@ -313,52 +313,52 @@ proto.im.FriendActPromiseClient.prototype.pass =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.RejectFriendRequest,
+ *   !proto.im.RejectFriendResponse>}
  */
 const methodDescriptor_FriendAct_Reject = new grpc.web.MethodDescriptor(
   '/im.FriendAct/Reject',
   grpc.web.MethodType.UNARY,
-  common_common_pb.FriendRequest,
-  common_common_pb.FriendResponse,
+  message_pb.RejectFriendRequest,
+  message_pb.RejectFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.RejectFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.RejectFriendResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.FriendRequest,
- *   !proto.common.FriendResponse>}
+ *   !proto.im.RejectFriendRequest,
+ *   !proto.im.RejectFriendResponse>}
  */
 const methodInfo_FriendAct_Reject = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.FriendResponse,
+  message_pb.RejectFriendResponse,
   /**
-   * @param {!proto.common.FriendRequest} request
+   * @param {!proto.im.RejectFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.FriendResponse.deserializeBinary
+  message_pb.RejectFriendResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.RejectFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.FriendResponse)}
+ * @param {function(?grpc.web.Error, ?proto.im.RejectFriendResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.FriendResponse>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.RejectFriendResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.FriendActClient.prototype.reject =
@@ -373,11 +373,11 @@ proto.im.FriendActClient.prototype.reject =
 
 
 /**
- * @param {!proto.common.FriendRequest} request The
+ * @param {!proto.im.RejectFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.FriendResponse>}
+ * @return {!Promise<!proto.im.RejectFriendResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.FriendActPromiseClient.prototype.reject =
@@ -393,52 +393,52 @@ proto.im.FriendActPromiseClient.prototype.reject =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.DelFriendRequest,
- *   !proto.common.ReturnCode>}
+ *   !proto.im.DelFriendRequest,
+ *   !proto.im.DelFriendResponse>}
  */
 const methodDescriptor_FriendAct_Delete = new grpc.web.MethodDescriptor(
   '/im.FriendAct/Delete',
   grpc.web.MethodType.UNARY,
-  common_common_pb.DelFriendRequest,
-  common_common_pb.ReturnCode,
+  message_pb.DelFriendRequest,
+  message_pb.DelFriendResponse,
   /**
-   * @param {!proto.common.DelFriendRequest} request
+   * @param {!proto.im.DelFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnCode.deserializeBinary
+  message_pb.DelFriendResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.DelFriendRequest,
- *   !proto.common.ReturnCode>}
+ *   !proto.im.DelFriendRequest,
+ *   !proto.im.DelFriendResponse>}
  */
 const methodInfo_FriendAct_Delete = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.ReturnCode,
+  message_pb.DelFriendResponse,
   /**
-   * @param {!proto.common.DelFriendRequest} request
+   * @param {!proto.im.DelFriendRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnCode.deserializeBinary
+  message_pb.DelFriendResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.DelFriendRequest} request The
+ * @param {!proto.im.DelFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.ReturnCode)}
+ * @param {function(?grpc.web.Error, ?proto.im.DelFriendResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnCode>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.DelFriendResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.FriendActClient.prototype.delete =
@@ -453,11 +453,11 @@ proto.im.FriendActClient.prototype.delete =
 
 
 /**
- * @param {!proto.common.DelFriendRequest} request The
+ * @param {!proto.im.DelFriendRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.ReturnCode>}
+ * @return {!Promise<!proto.im.DelFriendResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.FriendActPromiseClient.prototype.delete =
@@ -925,160 +925,80 @@ proto.im.UserActPromiseClient.prototype.getSelf =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.GetRequest,
- *   !proto.common.ReturnOtherInfo>}
+ *   !proto.im.GetUsersRequest,
+ *   !proto.im.GetUsersResponse>}
  */
-const methodDescriptor_UserAct_GetUser = new grpc.web.MethodDescriptor(
-  '/im.UserAct/GetUser',
+const methodDescriptor_UserAct_GetUsers = new grpc.web.MethodDescriptor(
+  '/im.UserAct/GetUsers',
   grpc.web.MethodType.UNARY,
-  common_common_pb.GetRequest,
-  common_common_pb.ReturnOtherInfo,
+  message_pb.GetUsersRequest,
+  message_pb.GetUsersResponse,
   /**
-   * @param {!proto.common.GetRequest} request
+   * @param {!proto.im.GetUsersRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnOtherInfo.deserializeBinary
+  message_pb.GetUsersResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.GetRequest,
- *   !proto.common.ReturnOtherInfo>}
+ *   !proto.im.GetUsersRequest,
+ *   !proto.im.GetUsersResponse>}
  */
-const methodInfo_UserAct_GetUser = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.ReturnOtherInfo,
+const methodInfo_UserAct_GetUsers = new grpc.web.AbstractClientBase.MethodInfo(
+  message_pb.GetUsersResponse,
   /**
-   * @param {!proto.common.GetRequest} request
+   * @param {!proto.im.GetUsersRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnOtherInfo.deserializeBinary
+  message_pb.GetUsersResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.GetRequest} request The
+ * @param {!proto.im.GetUsersRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.ReturnOtherInfo)}
+ * @param {function(?grpc.web.Error, ?proto.im.GetUsersResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnOtherInfo>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.GetUsersResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.im.UserActClient.prototype.getUser =
+proto.im.UserActClient.prototype.getUsers =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/im.UserAct/GetUser',
+      '/im.UserAct/GetUsers',
       request,
       metadata || {},
-      methodDescriptor_UserAct_GetUser,
+      methodDescriptor_UserAct_GetUsers,
       callback);
 };
 
 
 /**
- * @param {!proto.common.GetRequest} request The
+ * @param {!proto.im.GetUsersRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.ReturnOtherInfo>}
+ * @return {!Promise<!proto.im.GetUsersResponse>}
  *     A native promise that resolves to the response
  */
-proto.im.UserActPromiseClient.prototype.getUser =
+proto.im.UserActPromiseClient.prototype.getUsers =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/im.UserAct/GetUser',
+      '/im.UserAct/GetUsers',
       request,
       metadata || {},
-      methodDescriptor_UserAct_GetUser);
-};
-
-
-/**
- * @const
- * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.GetRequest,
- *   !proto.common.ReturnOtherInfo>}
- */
-const methodDescriptor_UserAct_GetMultipleUser = new grpc.web.MethodDescriptor(
-  '/im.UserAct/GetMultipleUser',
-  grpc.web.MethodType.UNARY,
-  common_common_pb.GetRequest,
-  common_common_pb.ReturnOtherInfo,
-  /**
-   * @param {!proto.common.GetRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  common_common_pb.ReturnOtherInfo.deserializeBinary
-);
-
-
-/**
- * @const
- * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.GetRequest,
- *   !proto.common.ReturnOtherInfo>}
- */
-const methodInfo_UserAct_GetMultipleUser = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.ReturnOtherInfo,
-  /**
-   * @param {!proto.common.GetRequest} request
-   * @return {!Uint8Array}
-   */
-  function(request) {
-    return request.serializeBinary();
-  },
-  common_common_pb.ReturnOtherInfo.deserializeBinary
-);
-
-
-/**
- * @param {!proto.common.GetRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.ReturnOtherInfo)}
- *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnOtherInfo>|undefined}
- *     The XHR Node Readable Stream
- */
-proto.im.UserActClient.prototype.getMultipleUser =
-    function(request, metadata, callback) {
-  return this.client_.rpcCall(this.hostname_ +
-      '/im.UserAct/GetMultipleUser',
-      request,
-      metadata || {},
-      methodDescriptor_UserAct_GetMultipleUser,
-      callback);
-};
-
-
-/**
- * @param {!proto.common.GetRequest} request The
- *     request proto
- * @param {?Object<string, string>} metadata User defined
- *     call metadata
- * @return {!Promise<!proto.common.ReturnOtherInfo>}
- *     A native promise that resolves to the response
- */
-proto.im.UserActPromiseClient.prototype.getMultipleUser =
-    function(request, metadata) {
-  return this.client_.unaryCall(this.hostname_ +
-      '/im.UserAct/GetMultipleUser',
-      request,
-      metadata || {},
-      methodDescriptor_UserAct_GetMultipleUser);
+      methodDescriptor_UserAct_GetUsers);
 };
 
 
@@ -2017,80 +1937,160 @@ proto.im.TeamActPromiseClient.prototype.update =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.UpdateAnnouncementRequest,
- *   !proto.common.ReturnCode>}
+ *   !proto.im.CreateAnnouncementRequest,
+ *   !proto.im.CreateAnnouncementResponse>}
  */
-const methodDescriptor_TeamAct_UpdateAnnouncement = new grpc.web.MethodDescriptor(
-  '/im.TeamAct/UpdateAnnouncement',
+const methodDescriptor_TeamAct_CreateAnnouncement = new grpc.web.MethodDescriptor(
+  '/im.TeamAct/CreateAnnouncement',
   grpc.web.MethodType.UNARY,
-  common_common_pb.UpdateAnnouncementRequest,
-  common_common_pb.ReturnCode,
+  message_pb.CreateAnnouncementRequest,
+  message_pb.CreateAnnouncementResponse,
   /**
-   * @param {!proto.common.UpdateAnnouncementRequest} request
+   * @param {!proto.im.CreateAnnouncementRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnCode.deserializeBinary
+  message_pb.CreateAnnouncementResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.UpdateAnnouncementRequest,
- *   !proto.common.ReturnCode>}
+ *   !proto.im.CreateAnnouncementRequest,
+ *   !proto.im.CreateAnnouncementResponse>}
  */
-const methodInfo_TeamAct_UpdateAnnouncement = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.ReturnCode,
+const methodInfo_TeamAct_CreateAnnouncement = new grpc.web.AbstractClientBase.MethodInfo(
+  message_pb.CreateAnnouncementResponse,
   /**
-   * @param {!proto.common.UpdateAnnouncementRequest} request
+   * @param {!proto.im.CreateAnnouncementRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnCode.deserializeBinary
+  message_pb.CreateAnnouncementResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.UpdateAnnouncementRequest} request The
+ * @param {!proto.im.CreateAnnouncementRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.ReturnCode)}
+ * @param {function(?grpc.web.Error, ?proto.im.CreateAnnouncementResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnCode>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.CreateAnnouncementResponse>|undefined}
  *     The XHR Node Readable Stream
  */
-proto.im.TeamActClient.prototype.updateAnnouncement =
+proto.im.TeamActClient.prototype.createAnnouncement =
     function(request, metadata, callback) {
   return this.client_.rpcCall(this.hostname_ +
-      '/im.TeamAct/UpdateAnnouncement',
+      '/im.TeamAct/CreateAnnouncement',
       request,
       metadata || {},
-      methodDescriptor_TeamAct_UpdateAnnouncement,
+      methodDescriptor_TeamAct_CreateAnnouncement,
       callback);
 };
 
 
 /**
- * @param {!proto.common.UpdateAnnouncementRequest} request The
+ * @param {!proto.im.CreateAnnouncementRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.ReturnCode>}
+ * @return {!Promise<!proto.im.CreateAnnouncementResponse>}
  *     A native promise that resolves to the response
  */
-proto.im.TeamActPromiseClient.prototype.updateAnnouncement =
+proto.im.TeamActPromiseClient.prototype.createAnnouncement =
     function(request, metadata) {
   return this.client_.unaryCall(this.hostname_ +
-      '/im.TeamAct/UpdateAnnouncement',
+      '/im.TeamAct/CreateAnnouncement',
       request,
       metadata || {},
-      methodDescriptor_TeamAct_UpdateAnnouncement);
+      methodDescriptor_TeamAct_CreateAnnouncement);
+};
+
+
+/**
+ * @const
+ * @type {!grpc.web.MethodDescriptor<
+ *   !proto.im.DeleteAnnouncementRequest,
+ *   !proto.im.DeleteAnnouncementResponse>}
+ */
+const methodDescriptor_TeamAct_DeleteAnnouncement = new grpc.web.MethodDescriptor(
+  '/im.TeamAct/DeleteAnnouncement',
+  grpc.web.MethodType.UNARY,
+  message_pb.DeleteAnnouncementRequest,
+  message_pb.DeleteAnnouncementResponse,
+  /**
+   * @param {!proto.im.DeleteAnnouncementRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  message_pb.DeleteAnnouncementResponse.deserializeBinary
+);
+
+
+/**
+ * @const
+ * @type {!grpc.web.AbstractClientBase.MethodInfo<
+ *   !proto.im.DeleteAnnouncementRequest,
+ *   !proto.im.DeleteAnnouncementResponse>}
+ */
+const methodInfo_TeamAct_DeleteAnnouncement = new grpc.web.AbstractClientBase.MethodInfo(
+  message_pb.DeleteAnnouncementResponse,
+  /**
+   * @param {!proto.im.DeleteAnnouncementRequest} request
+   * @return {!Uint8Array}
+   */
+  function(request) {
+    return request.serializeBinary();
+  },
+  message_pb.DeleteAnnouncementResponse.deserializeBinary
+);
+
+
+/**
+ * @param {!proto.im.DeleteAnnouncementRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @param {function(?grpc.web.Error, ?proto.im.DeleteAnnouncementResponse)}
+ *     callback The callback function(error, response)
+ * @return {!grpc.web.ClientReadableStream<!proto.im.DeleteAnnouncementResponse>|undefined}
+ *     The XHR Node Readable Stream
+ */
+proto.im.TeamActClient.prototype.deleteAnnouncement =
+    function(request, metadata, callback) {
+  return this.client_.rpcCall(this.hostname_ +
+      '/im.TeamAct/DeleteAnnouncement',
+      request,
+      metadata || {},
+      methodDescriptor_TeamAct_DeleteAnnouncement,
+      callback);
+};
+
+
+/**
+ * @param {!proto.im.DeleteAnnouncementRequest} request The
+ *     request proto
+ * @param {?Object<string, string>} metadata User defined
+ *     call metadata
+ * @return {!Promise<!proto.im.DeleteAnnouncementResponse>}
+ *     A native promise that resolves to the response
+ */
+proto.im.TeamActPromiseClient.prototype.deleteAnnouncement =
+    function(request, metadata) {
+  return this.client_.unaryCall(this.hostname_ +
+      '/im.TeamAct/DeleteAnnouncement',
+      request,
+      metadata || {},
+      methodDescriptor_TeamAct_DeleteAnnouncement);
 };
 
 
@@ -3137,52 +3137,52 @@ proto.im.TeamActPromiseClient.prototype.friendValidateList =
 /**
  * @const
  * @type {!grpc.web.MethodDescriptor<
- *   !proto.common.PullSpecifiedRequest,
- *   !proto.common.ReturnPullTeamAnnouncement>}
+ *   !proto.im.PullAnnouncementListRequest,
+ *   !proto.im.PullAnnouncementListResponse>}
  */
 const methodDescriptor_TeamAct_PullAnnouncementList = new grpc.web.MethodDescriptor(
   '/im.TeamAct/PullAnnouncementList',
   grpc.web.MethodType.UNARY,
-  common_common_pb.PullSpecifiedRequest,
-  common_common_pb.ReturnPullTeamAnnouncement,
+  message_pb.PullAnnouncementListRequest,
+  message_pb.PullAnnouncementListResponse,
   /**
-   * @param {!proto.common.PullSpecifiedRequest} request
+   * @param {!proto.im.PullAnnouncementListRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnPullTeamAnnouncement.deserializeBinary
+  message_pb.PullAnnouncementListResponse.deserializeBinary
 );
 
 
 /**
  * @const
  * @type {!grpc.web.AbstractClientBase.MethodInfo<
- *   !proto.common.PullSpecifiedRequest,
- *   !proto.common.ReturnPullTeamAnnouncement>}
+ *   !proto.im.PullAnnouncementListRequest,
+ *   !proto.im.PullAnnouncementListResponse>}
  */
 const methodInfo_TeamAct_PullAnnouncementList = new grpc.web.AbstractClientBase.MethodInfo(
-  common_common_pb.ReturnPullTeamAnnouncement,
+  message_pb.PullAnnouncementListResponse,
   /**
-   * @param {!proto.common.PullSpecifiedRequest} request
+   * @param {!proto.im.PullAnnouncementListRequest} request
    * @return {!Uint8Array}
    */
   function(request) {
     return request.serializeBinary();
   },
-  common_common_pb.ReturnPullTeamAnnouncement.deserializeBinary
+  message_pb.PullAnnouncementListResponse.deserializeBinary
 );
 
 
 /**
- * @param {!proto.common.PullSpecifiedRequest} request The
+ * @param {!proto.im.PullAnnouncementListRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @param {function(?grpc.web.Error, ?proto.common.ReturnPullTeamAnnouncement)}
+ * @param {function(?grpc.web.Error, ?proto.im.PullAnnouncementListResponse)}
  *     callback The callback function(error, response)
- * @return {!grpc.web.ClientReadableStream<!proto.common.ReturnPullTeamAnnouncement>|undefined}
+ * @return {!grpc.web.ClientReadableStream<!proto.im.PullAnnouncementListResponse>|undefined}
  *     The XHR Node Readable Stream
  */
 proto.im.TeamActClient.prototype.pullAnnouncementList =
@@ -3197,11 +3197,11 @@ proto.im.TeamActClient.prototype.pullAnnouncementList =
 
 
 /**
- * @param {!proto.common.PullSpecifiedRequest} request The
+ * @param {!proto.im.PullAnnouncementListRequest} request The
  *     request proto
  * @param {?Object<string, string>} metadata User defined
  *     call metadata
- * @return {!Promise<!proto.common.ReturnPullTeamAnnouncement>}
+ * @return {!Promise<!proto.im.PullAnnouncementListResponse>}
  *     A native promise that resolves to the response
  */
 proto.im.TeamActPromiseClient.prototype.pullAnnouncementList =

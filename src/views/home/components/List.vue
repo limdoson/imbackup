@@ -74,7 +74,8 @@
             append-to-body
             :visible.sync="msgOpen"
             width="400px">
-            <ul class="system-msg-list scroll-y-list">
+            <ul class="system-msg-list scroll-y-list" 
+                v-if='$store.state.messageModule.noticeCenter.systemMsg && $store.state.messageModule.noticeCenter.systemMsg.length'>
                 <li class="s-b" v-for='item in $store.state.messageModule.noticeCenter.systemMsg' :key='item.applyId'>
                     <user-avatar :img-path='item.fromAvatar' img-width='40px'></user-avatar>
                     <div class="form-info">
@@ -111,6 +112,9 @@
                     </template>
                 </li>
             </ul>
+            <p class="none-tips" v-else>
+                暂无相关信息
+            </p>
         </el-dialog>
     </div>
 </template>
@@ -242,7 +246,6 @@
                         } else {
                             this.$message({type: 'error', message: baseinfo.msg})
                         }
-
                         notice.status = result.applyStatus
                         this.$store.dispatch('updateNoticeStatus', notice)
                     })
@@ -253,8 +256,16 @@
             },
             //点击消息中心，如果有消息则打开消息列表
             openMsg () {
+                //如果存在回话的对象，则清空
+                if (this.$store.state.userModule.chartItem) {
+                    this.$store.commit('userModule/setChartItem', null)
+                }
+
                 if (this.$store.state.messageModule.noticeCenter.systemMsg.length) {
                     this.msgOpen = true
+                } else {
+                    this.$message.error('暂无最近消息')
+                    return;
                 }
             },
             //点击好友或群，拉群聊天列表

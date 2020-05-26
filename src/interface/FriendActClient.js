@@ -1,7 +1,8 @@
 import { GRPC_HOSTNAME, rpcLog } from '@itf/config'
-import { FriendInfo, PassFriendApplyInfo } from '@itf/im/message_pb'
+import { FriendInfo, PassFriendApplyInfo, ApplyFriendRequest, RejectFriendRequest, DelFriendRequest } from '@itf/im/message_pb'
 import { FriendActClient } from '@itf/im/im_grpc_web_pb'
-import { DelFriendRequest, FriendRequest, FriendAddType, GetRequest } from '@itf/common/common_pb'
+import {  FriendRequest, FriendAddType, GetRequest } from '@itf/common/common_pb'
+
 
 let friendActClient = new FriendActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
@@ -35,10 +36,11 @@ export function UpdateFriend(metadata, req) {
 }
 
 // 删除我的好友
-export function DeleteFriend(metadata, to) {
+export function DeleteFriend(metadata, faccid) {
+	
   	let request = new DelFriendRequest()
-  	request.setTo(to)
-
+  	request.setFaccid(faccid)
+	request.setDelAlias(true)
   	return new Promise((resolve, reject) => {
     	friendActClient.delete(request, metadata, (err, response) => {
       		rpcLog('deleteFriend:', request, err, response)
@@ -54,11 +56,9 @@ export function DeleteFriend(metadata, to) {
 
 // 申请加为好友
 export function ApplyFriend(metadata, account, applyMsg) {
-	let request = new FriendRequest()
+	let request = new ApplyFriendRequest()
 	request.setFaccid(account) 
 	request.setMsg(applyMsg)
-	// request.setApplyId(61810)
-	request.setAddType(FriendAddType.APPLY)
 
   	return new Promise((resolve, reject) => {
     	friendActClient.apply(request, metadata, (err, response) => {
@@ -95,10 +95,8 @@ export function PassFriendApply(metadata, messageItem) {
 
 // 拒绝添加好友申请
 export function RejectFriendApply(metadata, message) {
-	let request = new FriendRequest()
-	request.setAccid(message.from)
-	request.setFaccid(metadata.accid)
-	request.setAddType(FriendAddType.REJECT)
+	let request = new RejectFriendRequest();
+	request.setFaccid(message.from)
 	request.setApplyId(message.applyId)
 
 	return new Promise((resolve, reject) => {

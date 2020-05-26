@@ -8,10 +8,10 @@
             style="resize : none" 
             class="input-textarea"
             @keyup.shift="aitTeamMember($event)"
-            @keyup.ctrl.enter="sendTextMessage()"></textarea>
+            @keyup.ctrl.enter="sendTextMessage"></textarea>
         <!-- <input type="textarea" v-model='userInput'> -->
         <div style='text-align: right' class="send-msg-btn">
-            按下 ctrl + enter 发送  <el-button type='primary' size='small'>发 送</el-button>
+            按下 ctrl + enter 发送  <el-button type='primary' size='small' @click='sendTextMessage'>发 送</el-button>
         </div>
     </div>
 </template>
@@ -29,8 +29,11 @@
         },
         data () {
             return {
-
+                isMsgSending : false,//消息是否在发送中
             }
+        },
+        created () {
+            console.log('getter',this.$store.getters)
         },
         computed : {
             //mapstate中的userInput
@@ -52,21 +55,61 @@
             },
             //发送效果
             sendTextMessage () {
-
+                if (this.isMsgSending) {
+                    this.$message.error('消息发送中，请稍等');
+                    return;
+                }
+                this.sendMessageHandle(this.encryptTextMessage(this.$store.state.messageModule.userInput), 'text')
             },
-            //send
-            sendMessageHandle () {
+            //发送消息主逻辑
+            sendMessageHandle (content, contentType) {
+                let request = this.msgHandle(content, contentType);
+                this.isMsgSending = true;
+                SendMessage(this.$store.state.userModule.config, request)
+                    .then(res => {
+                        console.log(res)
+                        let {code, msg} = res.baseinfo;
+                        if (code == 200) {
+                            this.$store.commit('userModule/sendMsgSuccess', res.msg)
+                            //清空用户的输入记录
+                            this.$store.commit('changeUserInput', '')
+                        } else {
+                            this.$message.error(`消息发送失败：${msg}`)
+                        }
+                        this.isMsgSending = false;
+                    })
 
             },
             //消息处理函数
             msgHandle (content, contentType) {
                 let appMsg =  new SendMsgRequest();
-                // let from = this.isTeamChat() ? 
+                let from = this.isTeamChat() 
+                    ? this.$store.state.userModule.chartItem.pv_private.memberInfo.openId 
+                    : this.$store.state.userModule.userInfo.accid;
+                appMsg.setFrom(from);
+                appMsg.setSessionType(SessionTypes.SINGLE);
+                appMsg.setSessionId(this.$store.state.userModule.chartItem.sessionId);
+                appMsg.setTo(this.$store.state.userModule.chartItem.accid)
+                appMsg.setContent(content)
+                appMsg.setUuid(makeUuid())
+                appMsg.setMsgContentType(MsgContentType.TEXT)
+                
+                if (contentType === 'text') {
+                    appMsg.setExt(JSON.stringify({
+                        keyid : this.$store.getters.defaultEncryptKeyid
+                    }))
+                }
+                return appMsg;
             },
             //判断是否为群聊
             isTeamChat () {
                 return this.$store.state.userModule.chartItem.sessionType === SessionTypes.TEAM
-            }
+            },
+            //文本消息加密
+            encryptTextMessage(message) {
+                let encryptMessage = Encrypt(message, this.$store.getters.defaultEncryptKey)
+                return encryptMessage
+            },
         }
     }
 </script>

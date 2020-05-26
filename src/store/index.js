@@ -59,7 +59,15 @@ export default new Vuex.Store({
 				commit('setChatEncrypt', encrypt)
 			})
 		}
-  	},
+	},
+	getters : {
+		defaultEncryptKeyid : state =>{
+			return state.encrypt.default.im_crypt_keyid
+		},
+		defaultEncryptKey: state => {
+			return state.encrypt.default.im_crypt_key
+		},
+	},
   	modules: {
 		userModule,
 		messageModule
