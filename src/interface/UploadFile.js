@@ -2,9 +2,11 @@ import { Chunk, UploadFileType } from '@itf/common/common_pb'
 import { UploadClient } from '@itf/im/im_grpc_web_pb'
 import {  rpcLog } from '@itf/config'
 
-let client = new UploadClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
-console.log('client',client)
+let uploadClient = new UploadClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
+
 export function UploadFile(metadata, file, fileBigType) {
+    console.log('uploadClient',uploadClient);
+    return;
     let chunk = new Chunk();
     let reader = new FileReader();
     let singleSize = 521* 1024;
@@ -17,7 +19,7 @@ export function UploadFile(metadata, file, fileBigType) {
         while(index < res.loaded) {
             content = res.target.result.slice(index, singleSize)
             chunk.setContent(content)
-            client.client(chunk)
+            uploadClient.client(chunk)
 
             if(content.length < singleSize) {
                 break;

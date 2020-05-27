@@ -1,7 +1,7 @@
 import { GRPC_HOSTNAME, rpcLog } from '@itf/config'
-import { FriendInfo, PassFriendApplyInfo, ApplyFriendRequest, RejectFriendRequest, DelFriendRequest } from '@itf/im/message_pb'
+import { FriendInfo, PassFriendApplyInfo, ApplyFriendRequest, RejectFriendRequest, DelFriendRequest, PassFriendRequest } from '@itf/im/message_pb'
 import { FriendActClient } from '@itf/im/im_grpc_web_pb'
-import {  FriendRequest, FriendAddType, GetRequest } from '@itf/common/common_pb'
+import {  FriendRequest, FriendAddType, GetRequest, UpdateFriendRequest } from '@itf/common/common_pb'
 
 
 let friendActClient = new FriendActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
@@ -21,8 +21,12 @@ export function GetApplyList(metadata) {
 	})
 }
 
-export function UpdateFriend(metadata, req) {
-
+//修改好友备注
+export function UpdateFriend(metadata, from, to, alias) {
+	let req = new UpdateFriendRequest()
+	req.setFrom(from)
+	req.setTo(to)
+	req.setAlias(alias)
 	return new Promise((resolve, reject) => {
 		friendActClient.updateFriend(req, metadata, (err, response) => {
 			rpcLog('updateFriend:', req, err, response)
@@ -75,11 +79,9 @@ export function ApplyFriend(metadata, account, applyMsg) {
 
 // 同意添加好友申请
 export function PassFriendApply(metadata, messageItem) {
-	let request = new FriendRequest()
-	request.setAccid(metadata.accid)
-	request.setFaccid(messageItem.from)
-	request.setAddType(FriendAddType.PASS)
-	request.setApplyId(messageItem.applyId)
+	let request = new PassFriendRequest()
+	request.setFaccid(messageItem.from)//要通过的用户的id
+	request.setApplyId(messageItem.applyId)//applyid
   	return new Promise((resolve, reject) => {
 		friendActClient.pass(request, metadata, (err, response) => {
 			rpcLog('PassFriendApply', request, err, response)

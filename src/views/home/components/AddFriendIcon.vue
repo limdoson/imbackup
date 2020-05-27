@@ -253,6 +253,7 @@
                         this.showSearchUser = false;
                         this.answer = '';
                         this.addUserForm = false;
+                        this.applyMsg = ''
                     }
                     
                 }).catch(()=>{
@@ -298,12 +299,14 @@
             //获取群名称工具函数
             getTeamName(){
                 let memberNames = []
+                console.log(this.selectedContacts, this.$store.state.userModule.usersMap)
                 memberNames.push(this.$store.state.userModule.userInfo.name);
                 this.selectedContacts.map(item => {
                     if (this.$store.state.userModule.usersMap[item].name) {
                         memberNames.push(this.$store.state.userModule.usersMap[item].name)
                     }
                 })
+                console.log('teamname',memberNames)
                 return memberNames.join('、')
             }
         }

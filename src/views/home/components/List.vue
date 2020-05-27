@@ -24,7 +24,12 @@
         <ul class="chart-list ">
             <!-- 顶部通用的消息中心 -->
             <li class="f-s" @click='openMsg'>
-                <el-badge :value="$store.getters.systemMsgLength" class="item">
+                <el-badge 
+                    :value="
+                        $store.state.messageModule.noticeCenter.unReadCount
+                        ? $store.state.messageModule.noticeCenter.unReadCount
+                        : null
+                    " class="item">
                     <img :src="require('@ast/images/notice.png')" alt="通知">
                 </el-badge>
                 <span>消息中心</span>
@@ -37,10 +42,10 @@
                             <img :src="firendAvatar(item)" alt="好友头像">
                         </el-badge>
                         <span>
-                            <template v-if='$store.state.tab == `contacts`'>
+                            <template v-if='tab == `contacts`'>
                                 {{item | showName}}
                             </template>
-                            <template v-if='$store.state.tab == `teams` && item.base'>
+                            <template v-if='tab == `teams` && item.base'>
                                 {{item.base.name ? item.base.name : '无'}}
                             </template>
                         </span>
@@ -50,13 +55,13 @@
             </template>
             <template v-else>
                 <li class="center">
-                    <template v-if='$store.state.tab == `chats`'>
+                    <template v-if='tab == `chats`'>
                         暂无最近聊天信息
                     </template>
-                    <template v-if='$store.state.tab == `contacts`'>
+                    <template v-if='tab == `contacts`'>
                         暂无任何好友
                     </template>
-                    <template v-if='$store.state.tab == `teams`'>
+                    <template v-if='tab == `teams`'>
                         暂无任何群信息
                     </template>
                 </li>
@@ -120,12 +125,15 @@
 </template>
 <script>
 
-    import {ApplyType} from "@itf/common/common_pb"
+    import {ApplyType, SessionTypes} from "@itf/common/common_pb"
     import {PassFriendApply, RejectFriendApply} from "@itf/FriendActClient"
     import { AcceptInvite, RejectInvite } from "@itf/TeamActClient"
     import { FriendAddType } from "@itf/common/common_pb"
     import {PullSessionList} from '@itf/UserActClient'
     import userAvatar from '@c/UserAvatar'
+    import {showName} from '@u/store'
+    import {mapState} from 'vuex'
+
     export default {
         components : {
             userAvatar
@@ -141,6 +149,9 @@
             }
         },
         computed : {
+            ...mapState({
+                tab : (state) => state.userModule.tab
+            }),
             /* 
                 如果当前激活的tab下没有任何列表数据，则不允许输入
             */
@@ -150,6 +161,7 @@
             /* 
                 未读系统通知数量
             */
+           
             unReadSystemMsg () {
                 if (this.$store.state.messageModule.noticeCenter.systemMsg.length ) {
                     // 仅计算status = 1 （直接添加好友） status = 2 （普通添加好友）
@@ -159,11 +171,16 @@
                     if (effect.length) {
                         return effect.length <= 99 ? effect.length : null
                     } else {
-                        return false;
+                        return null;
                     }
                 } else {
                     return null
                 }
+            }
+        },
+        watch : {
+            tab (n, o) {
+                console.log('tab',n)
             }
         },
         methods :{
@@ -193,6 +210,25 @@
 
                             if (baseinfo.code == 200) {
                                 this.$message({type: 'success', message: '同意操作成功'})
+                                //梳理后端返回的数据结构
+                                let friend = {
+                                    account : result.friendsinfo.accid,
+                                    accid : result.friendsinfo.accid,
+                                    alias: result.friendsinfo.setting.alias,
+                                    avatar : result.friendsinfo.common.avatar,
+                                    isBlack : result.friendsinfo.setting.isBlack,
+                                    name : result.friendsinfo.common.name,
+                                    sessionType: SessionTypes.SINGLE,
+                                    sessionId :  result.friendsinfo.setting.sessionId,
+                                    type :'friend',
+                                    isShow : true,
+                                    showName: showName(result.friendsinfo.setting),
+                                    key : result.friendsinfo.accid,
+                                    label: showName(result.friendsinfo),
+                                    unread : 0
+                                }
+                                console.log('friend-info',friend)
+                                this.$store.commit('userModule/addFriends',friend)
                             } else {
                                 this.$message({type: 'error', message: baseinfo.msg})
                             }
@@ -271,6 +307,7 @@
             //点击好友或群，拉群聊天列表
             getChartsContent (item) {
                 this.$store.commit('userModule/setChartItem', item)
+                
                 // console.log(item)
                 // PullSessionList(item)
                 // .then(res => {
@@ -334,6 +371,11 @@
                     margin: 15px;
                     color: #666;
                     font-size: 13px;
+                    display: block;
+                    width: 100%;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
                 }
             }
             .center {

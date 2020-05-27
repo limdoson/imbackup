@@ -1,6 +1,9 @@
 import { EventCode } from '@itf/common/common_pb'
 import { HeartBeat } from "@itf/ServerClient"
 
+
+//注意，这里的时间中的store是userModule，因为消息订阅是在userModule中定义的
+
 let maps = new Map([
     //登录->触发userModule中的获取用户信息action以及获取联系人列表的action
     [
@@ -28,10 +31,22 @@ let maps = new Map([
             */
             if (result.msgId != 0) {
                 let attach = JSON.parse(result.attach)
-                console.log('attach',attach)
+               
                 commit('addNotice', attach.applyFriend, {root : true})
             }
             
+        }
+    ],
+    //收到别人同意我的加好友申请
+    [
+        EventCode.EVENTPASSFRIENDAPPLY,
+        ({commit}, result) => {
+            if (result.msgId != 0) {    
+                let attach = JSON.parse(result.attach)
+                console.log('attach',attach)
+                commit('addFriends', attach.passFriendApply.friend)
+               
+            }
         }
     ],
     //添加好友申请被拒绝
@@ -41,23 +56,58 @@ let maps = new Map([
             // commit('')
         }
     ],
-
+    //收到别人把我从好友列表中删除
+    [
+        EventCode.EVENTDELFRIEND,
+        ({ commit, dispatch, state }, result) => {
+            if (result.msgId != 0) {
+                let attach = JSON.parse(result.attach)
+                commit('delFriend', attach)
+            }
+            // alert('别人删除我了')
+        }
+    ],
     /* 
         群相关
     */
-    //收到他人把我拉进群
+    //收到群添加了新增员
     [
         EventCode.EVENTTEAMADDMEMBER,
         ({commit, dispatch, state}, result) => {
-            console.log('收到群邀请', JSON.parse(result.attach))
+            console.log('群里添加了新的小伙伴', JSON.parse(result.attach))
+            commit('teamAddMember', JSON.parse(result.attach))
+        }
+    ],
+    //收到他人邀请我进群
+    [
+        EventCode.EVENTTEAMINVITE,
+        ({commit}, result) => {
+            // console.log('收到别人邀请我进群', JSON.parse(result.attach))
+            commit('addNotice', JSON.parse(result.attach).teamInvite, {root: true})
         }
     ],
     //创建群
     [
         EventCode.EVENTCREATETEAM, // 新建群
         ({ commit }, result) => {
-            alert('new team')
             commit('createTeam', JSON.parse(result.ext))
+        }
+    ],
+    //收到群解散的消息通知
+    [
+        EventCode.EVENTTEAMDISSOLVE,//
+        ({commit}, result) => {
+            let attach = JSON.parse(result.attach)
+            console.log('收到群解散的消息通知', attach)
+            commit('dissolveTeamDependAccordingToNitce', attach)
+        }
+    ],
+    //收到成员离群的通知
+    [
+        EventCode.EVENTSOMEONEQUITTEAM,
+        ({commit}, result) => {
+            let attach = JSON.parse(result.attach)
+            commit('receiveMemberLeaveNotice', attach)
         }
     ]
 ])

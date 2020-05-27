@@ -13,16 +13,12 @@ export function showName(item) {
     return item.name
 }
 
-export function throttle (fn, wait) {
-	var timer = null;
-    return function(){
-        var context = this;
-        var args = arguments;
-        if(!timer){
-            timer = setTimeout(function(){
-                fn.apply(context,args);
-                timer = null;
-            },wait)
-        }
+/* 
+    去除字符串所有空格
+*/
+export function _trim (str) {
+    if (typeof str != 'string') {
+        return;
     }
+    return str.replace(/\s*/g,"")
 }

@@ -26,7 +26,7 @@ export const UPDATE_MY_GENDER = 6
 //设置加好友配置
 export function SetAddTypeSetting(metadata, params) {
 	let req = new SetAddTypeRequest();
-	
+		
 	let addType = new AddType();
 	addType.setAddType(params.addType)
 	addType.setAddFriendIssue(params.question)

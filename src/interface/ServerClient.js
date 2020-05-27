@@ -6,7 +6,8 @@ let server = new ServerClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
 // 登陆
 export function Login(metadata, request) {
-	console.log('metadata:',metadata)
+	console.log('login', server)
+	// console.log('metadata:',metadata)
 	return new Promise((resolve, reject) => {
 		server.login(request, metadata, (err, response) => {
 			rpcLog('login:', request, err, response)

@@ -2,7 +2,7 @@
     <el-badge :value="null" :is-dot='isDot' >
         <i class="el-icon-chat-dot-round icon"
             title="最近聊天"
-            @click="$store.dispatch('leftMenuTab', 'chats')">
+            @click="$store.dispatch('userModule/tabChange', 'chats')">
         </i>
     </el-badge>
 </template>

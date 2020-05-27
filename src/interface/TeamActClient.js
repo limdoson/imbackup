@@ -28,7 +28,8 @@ export function CreateTeam(metadata, name, accids, magree =1) {
     })
 }
 
-export function GetMemberList(metadata, {accid, tid, page}){
+//获取群成员列表
+export function GetMemberList(metadata, accid, tid, page){
     let req = new GetMemberListRequest()
     req.setAccid(accid)
     req.setTid(tid)
@@ -188,10 +189,11 @@ export function AddManager(metadata, tid, openId) {
     })
 }
 
-export function ChangeOwner(metadata, tid, openId) {
+
+export function ChangeOwner(metadata, tid) {
     let request = new ChangeOwnerRequest()
     request.setTid(tid)
-    request.setMembersList([openId])
+    request.setAccid()
     request.setLeave(TeamChangeOwnerLeaveType.CHANGEANDBEMEMBER)
 
     return new Promise((resolve, reject) => {
@@ -205,11 +207,11 @@ export function ChangeOwner(metadata, tid, openId) {
         })
     })
 }
-
+//解散群
 export function Dissolve(metadata, tid) {
     let req = new LeaveTeamRequest()
     req.setTid(tid)
-
+    req.setAccid(metadata.accid)
     return new Promise((resolve, reject) => {
         teamActClient.dissolve(req, metadata, (err, response) => {
             rpcLog('Dissolve', req, err, response)
@@ -282,6 +284,23 @@ export function RejectInvite(metadata, notice) {
     return new Promise((resolve, reject) => {
         teamActClient.rejectInvite(req, metadata, (err, response) => {
             rpcLog('AcceptInvite', req, err, response)
+            if (err) {
+                reject(err)
+            } else {
+                resolve(response.toObject())
+            }
+        })
+    })
+}
+
+//主动退出
+export function LeaveTeam (metadata, tid) {
+    let req = new LeaveTeamRequest();
+    req.setTid(tid);
+    req.setAccid(metadata.accid)
+    return new Promise((resolve, reject) => {
+        teamActClient.leave(req, metadata, (err, response) => {
+            rpcLog('LeaveTeam', req, err, response)
             if (err) {
                 reject(err)
             } else {

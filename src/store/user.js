@@ -12,6 +12,11 @@ import {
 } from "@u/constants"
 
 const state = {
+	tab : 'chats',//记录当前左侧菜单激活的选项
+	/*
+		chats ->最近聊天  contacts ->联系人  teams ->群聊 
+	*/
+	tabs : ['chats','contacts','teams'], 
 	config : {
 		appid: 'test',
 		accid: null,
@@ -44,6 +49,8 @@ const state = {
 	contacts : [],
 	//全部群聊
 	teams : [],
+	//群成员
+	teamMemberList : [],
 	//前端用来显示的联系人列表，根据tab来区分是显示联系人还是群聊
 	list : null,
 	//当前聊天的对象(人或群)
@@ -88,11 +95,11 @@ const mutations = {
 		state.userInfo = input;
 		// 特殊: "我(自己)的" 信息映射
 		state.usersMap[state.userInfo.accid] = {
-			accid: state.userInfo.accid,
-			name: state.userInfo.name,
+			accid: input.accid,
+			name: input.name,
 			alias: '',
 			team_nick: '',
-			icon: state.userInfo.avatar,
+			icon: input.icon,
 		}
 	},
 	/* 
@@ -163,16 +170,18 @@ const mutations = {
 	/* 
 		初始化用户信息映射usersMap
 	*/
-	initUsersMap(state) {
-		state.contacts.map((item) => {
-			state.usersMap[item.accid] = {
-				accid: item.accid,
-				name: item.name,
-				alias: item.alias,
-				teamNick: '',
-				icon: item.avatar,
-			}
-		})
+	initUsersMap(state, input) {
+		if (input.length) {
+			input.map(item => {
+				state.usersMap[item.accid] = {
+					accid: item.accid,
+					name: item.common.name,
+					alias: item.setting.alias,
+					teamNick: '',
+					icon: item.common.avatar,
+				}
+			})
+		}
 	},
 	/* 
 		tab切换时触发该mut
@@ -187,6 +196,7 @@ const mutations = {
 			state.teams = input.data
 			state.list = input.data
 		}
+		state.tab = input.tab;
 		state.chartItem = null
 	},
 	/* 
@@ -216,24 +226,25 @@ const mutations = {
 	/* 
 		添加好友
 	*/
-	addFriends (state, input) {
-		contact.setting.name = contact.common.nam
+	addFriends (state, contact) {
+		
 		let newContact = {
 			// 原始字段
 			account: contact.accid,
 			accid: contact.accid,
-			alias: contact.setting.alias,
-			avatar: contact.common.avatar,
-			isBlack: contact.setting.isBlack,
+			alias: contact.alias,
+			avatar: contact.avatar,
+			isBlack: contact.isBlack,
 			//msgPrompt: contact.msgPrompt, // 是否
-			name: contact.common.name,
+			name: contact.name,
 			sessionTop: contact.sessionTop,
 			sessionType: SessionTypes.SINGLE,
+			sessionId: contact.sessionId,
 			// 扩展字段
 			type: 'friend',
 			// 搜索用字段
 			isShow: true,
-			showName: showName(contact.setting),
+			showName: showName(contact),
 			// 以下群聊发起使用字段
 			key: contact.accid,
 			label: showName(contact),
@@ -241,11 +252,77 @@ const mutations = {
 			unread: 0,
 		}
 		//向最近聊天和联系人中加入通过的该好友
-		state.chats.unshift(newContact)
+		// state.chats.unshift(newContact)
 		state.contacts.unshift(newContact)
-
-		// state.tab = 'chats'
-		// state.item = newContact
+		//新增usersMap映射
+		state.userMap[contact.accid] = {
+			accid: contact.accid,
+			name: contact.name,
+			alias: contact.alias,
+			team_nick: '',
+			icon: contact.avatar,
+		}
+	},
+	/* 
+		收到别人将我从好友列表中删除
+	*/
+	delFriend (state, input) {
+		state.contacts = state.contacts.filter( item => {
+			return item.accid != input.deleteFriend.from
+		})
+		
+		//如果删除的人有在最近聊天中，也一起删除
+		if (state.chats.length) {
+			state.chats = state.chart.filter(item => {
+				return item.accid != input.deleteFriend.from
+			})
+		}
+		//如果当前正在聊天的是这个人，则清楚聊天对象
+		if (state.chartItem) {
+			if (state.chartItem.accid == input.deleteFriend.from) {
+				state.chartItem = null;
+			}
+		}
+		//如果当前的tab是好友列表，则删除
+		if (state.tab == 'contacts') {
+			state.list = state.list.filter(item =>{
+				return item.accid != input.deleteFriend.from
+			})
+		}
+	},
+	/* 
+		用户操作删除好友
+	*/
+	delFriendBuyUser (state) {
+		state.contacts = state.contacts.filter( item => {
+			return item.accid != state.chartItem.accid
+		})
+		//尝试在最近聊天中删除该好友
+		if (state.chats.length) {
+			state.chats = state.chats.filter(item => {
+				return item.accid != state.chartItem.accid
+			})
+		}
+		if (state.list.length) {
+			if (state.tab == 'contacts') {
+				state.list = state.list.filter(item =>{
+					return item.accid != state.chartItem.accid
+				})
+			}
+		}
+		state.chartItem = null;
+	},
+	//更新好友的字段值
+	updateFriendInfo(state, input) {
+		if (state.chartItem) {
+			state.chartItem[input.updateKey] = input.value;
+			state.contacts.map(item => {
+				if (item.accid == state.chartItem.accid) {
+					item[input.updateKey] = input.value
+				}
+			})
+		}
+		
 	},
 	/* 
 		创建群
@@ -284,14 +361,74 @@ const mutations = {
 			return item;
 		})
 	},
-	//删除好友
-	deleteFriend ( state, accid ) {
-		//从联系人列表中删除该好友
-		state.contacts = state.contacts.filter(item => {
-			return item.accid != accid
+	//更新teamMemberList
+	setTeamMemberList (state, input) {
+		state.teamMemberList = input;
+	},
+	//群主解散群
+	dissolveTeamByUser (state) {
+		//从群列表中删除该群
+		state.teams = state.teams.filter(item => {
+			return item.base.tid != state.chartItem.base.tid
 		})
-		//删除当前聊天对象
+		if (state.tab == 'teams') {
+			state.list = state.list.filter(item =>{
+				return item.base.tid != state.chartItem.base.tid
+			})
+		}
 		state.chartItem = null;
+	},
+	//收到解散群的通知
+	dissolveTeamDependAccordingToNitce (state, input) {
+		state.teams = state.teams.filter(item => {
+			return item.base.tid != input.dismissTeam.team.tid
+		})
+		//如果当前聊天对象是该群，则删除该聊天对象
+		if (state.chartItem) {
+			if (state.chartItem.base.tid == input.dismissTeam.team.tid) {
+				state.chartItem = null;
+			}
+		}
+		//如果当前tab是在群列表，则从list中删除群
+		if (state.tab == 'teams' && state.teams.length) {
+			state.list = state.list.filter(item => {
+				return item.base.tid != input.dismissTeam.team.tid
+			})
+		}
+	},
+	//用户主动退群
+	leaveTeamByUser (state) {
+		state.teams = state.teams.filter(item =>{
+			return item.base.tid != state.chartItem.base.tid
+		})
+		state.list = state.list.filter(item => {
+			return item.base.tid != state.chartItem.base.tid
+		})
+		state.chartItem = null;
+	},
+	//收到群成员退群的通知
+	receiveMemberLeaveNotice (state, input) {
+		if (!state.chartItem) {
+			return;
+		}
+		//如果当前的聊天就是该群，则从群成员列表中移除离群用户
+		if (state.chartItem.type == 'team' && state.chartItem.pb_private.tid == input.leaveTeam.team.tid) {
+			if (state.teamMemberList.length) {
+				state.teamMemberList = state.teamMemberList.filter(item => {
+					return item.openId != input.leaveTeam.from.open_id
+				})
+			}
+		}
+	},
+	//群里新增了成员->来自于系统通知
+	teamAddMember ( state, input ){
+		if (!state.chartItem) {
+			return;
+		}
+		//如果当前的聊天对象就是该群，且有成员列表，则在成员列表中添加入新成员信息
+		if (state.chartItem.type == 'team' && state.chartItem.pb_private.tid == input.team.tid && state.teamMemberList.length) {
+			state.teamMemberList = [...state.teamMemberList, ...input.members];
+		}
 	},
 }
 
@@ -363,7 +500,7 @@ const actions = {
 	getFriends ({commit, state}) {
 		GetMyFriends(state.config).then( res => {
 			commit('initContacts', res.friendsinfoList);
-			commit('initUsersMap')
+			commit('initUsersMap', res.friendsinfoList)
 		})
 	},
 	/* 
@@ -391,6 +528,7 @@ const actions = {
 		tab修改时触发
 	*/
 	tabChange ({commit,state}, input) {
+		console.log(state, input)
 		switch (input) {
 			case 'chats':
 				//如果是最近的消息，则请求一次最新的消息
@@ -413,6 +551,7 @@ const actions = {
 						tab : input,
 						data : res.teaminfoList.map(item => {
 							item.isShow = true; //给一个初始的isShow = true 用在搜索中过滤
+							item.type ='team'
 							return item
 						})
 					})

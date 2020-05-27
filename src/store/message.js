@@ -13,10 +13,19 @@ const state = {
 const mutations = {
     //初始化信息中心->用户登录执行即执行
     initNotice (state, input) {
-        state.noticeCenter.systemMsg = input
+        state.noticeCenter.systemMsg = input;
+        if (input.length) {
+            input.map(item => {
+                if (item.status == 2 || item.status == 1) {
+                    state.noticeCenter.unReadCount  +=1
+                }
+            })
+            
+        }
     },
     //收到系统通知:好友申请和直接添加好友
     addNotice (state, input) {
+        console.log(input)
         /* 
             由于在登录时拉取的applyList的格式为 : 
                 {
@@ -58,27 +67,29 @@ const mutations = {
             })
 
             if (flag) {
-                state.noticeCenter.systemMsg.map(item => {
-                    if (item.applyId === notice.applyId) {
-                        item = notice;
+                state.noticeCenter.systemMsg.forEach((item,index) => {
+                    if (item.applyId == notice.applyId) {
+                        state.noticeCenter.systemMsg[index] = notice;
                     }
-                    return item;
                 })
             } else {
                 state.noticeCenter.systemMsg.unshift(notice)
+                
             }
         } else {
-            state.noticeCenter.systemMsg = [notice]
+            state.noticeCenter.systemMsg = [notice];
+           
         }
-
+        //未读数量自增1
+        state.noticeCenter.unReadCount ++
         
     },
     //更新消息中心
     updateNoticeStatus: (state, notice) => {
-        console.log('updateNs', notice)
         state.noticeCenter.systemMsg.forEach( (item) => {
             if (item.applyId == notice.applyId) {
                 item.status = notice.status
+                state.noticeCenter.unReadCount --
             }
         })
     },
