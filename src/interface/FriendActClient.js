@@ -1,7 +1,12 @@
 import { GRPC_HOSTNAME, rpcLog } from '@itf/config'
 import { FriendInfo, PassFriendApplyInfo, ApplyFriendRequest, RejectFriendRequest, DelFriendRequest, PassFriendRequest } from '@itf/im/message_pb'
 import { FriendActClient } from '@itf/im/im_grpc_web_pb'
-import {  FriendRequest, FriendAddType, GetRequest, UpdateFriendRequest } from '@itf/common/common_pb'
+import {  
+	FriendRequest, 
+	FriendAddType,
+	GetRequest, 
+	UpdateFriendRequest,
+	MarkFriendBlackRequest } from '@itf/common/common_pb'
 
 
 let friendActClient = new FriendActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
@@ -138,7 +143,7 @@ export function GetFriend(metadata, accids) {
 
   	return new Promise((resolve, reject) => {
 		friendActClient.getFriend(req, metadata, (err, response) => {
-		rpcLog('getFriend', req, err, response)
+			rpcLog('getFriend', req, err, response)
 
 			if (err) {
 				reject(err)
@@ -147,4 +152,23 @@ export function GetFriend(metadata, accids) {
 			}
 		})
   	})
+}
+
+//将好友加入黑名单/从黑名单移除
+export function MarkBlack (metadata, to, value) {
+	let req = new MarkFriendBlackRequest()
+	req.setFrom(metadata.accid);
+	req.setTo(to);
+	req.setValue(value);
+	
+	return new Promise( (resolve, reject) =>{
+		friendActClient.markBlack(req, metadata, (err, response) => {
+			rpcLog('MarkBlack', req, err, response)
+			if (err) {
+				reject(err)
+			} else {
+				resolve(response.toObject())
+			}
+		})
+	})
 }

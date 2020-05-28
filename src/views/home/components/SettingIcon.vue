@@ -5,8 +5,12 @@
             class='mini-popover'
             placement="right"
             width="80px"
+            ref='settingMenu'
             trigger="click">
             <ul class="setting-menu">
+                <li @click="viewBlackList">
+                    黑名单列表
+                </li>
                 <li>
                     <el-dropdown style="width : 100%" @command='settingMenuItemClick'>
                         <span class="el-dropdown-link">
@@ -127,6 +131,11 @@
                     //获取登录账号的好友设置参数
                     this.showAddFriendSetting = true;
                 }
+            },
+            //查看黑名单
+            viewBlackList (){
+                this.$refs.settingMenu.doClose()
+                this.$store.commit('userModule/tabChange', {tab : 'black'})
             },
             //加好友设置取消
             addFriendSettingCancel () {

@@ -74,6 +74,9 @@ let maps = new Map([
     [
         EventCode.EVENTTEAMADDMEMBER,
         ({commit, dispatch, state}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
             console.log('群里添加了新的小伙伴', JSON.parse(result.attach))
             commit('teamAddMember', JSON.parse(result.attach))
         }
@@ -82,6 +85,9 @@ let maps = new Map([
     [
         EventCode.EVENTTEAMINVITE,
         ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
             // console.log('收到别人邀请我进群', JSON.parse(result.attach))
             commit('addNotice', JSON.parse(result.attach).teamInvite, {root: true})
         }
@@ -90,6 +96,9 @@ let maps = new Map([
     [
         EventCode.EVENTCREATETEAM, // 新建群
         ({ commit }, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
             commit('createTeam', JSON.parse(result.ext))
         }
     ],
@@ -97,6 +106,9 @@ let maps = new Map([
     [
         EventCode.EVENTTEAMDISSOLVE,//
         ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
             let attach = JSON.parse(result.attach)
             console.log('收到群解散的消息通知', attach)
             commit('dissolveTeamDependAccordingToNitce', attach)
@@ -106,10 +118,46 @@ let maps = new Map([
     [
         EventCode.EVENTSOMEONEQUITTEAM,
         ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
             let attach = JSON.parse(result.attach)
             commit('receiveMemberLeaveNotice', attach)
         }
-    ]
+    ],
+    //收到群成员修改自己的群昵称
+    [
+        EventCode.EVENTMODIFYSELFTEAMNICK,
+        ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
+            let attach = JSON.parse(result.attach)
+            commit('receiveMemberUpdateNick', attach)
+        }
+    ],
+    //收到创建群公告通知
+    [
+        EventCode.EVENTUPDATEANNOUNCEMENT,
+        ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
+            let attach = JSON.parse(result.attach)
+            commit('R_Team_ANM_Update', attach)
+        }
+    ],
+    //收到删除公告通知
+    [
+        EventCode.EVENTDELETEANNOUNCEMENT,
+        ({commit}, result) => {
+            if (result.msgId == 0) {
+                return;
+            }
+            let attach = JSON.parse(result.attach)
+            commit('receiveDeleteANM', attach)
+        }
+    ],
 ])
 
 export function EventHandler (context, response) {

@@ -18,7 +18,7 @@
                         电话：{{$store.state.userModule.userInfo.mobile || '-'}}
                     </p>
                 </div>
-                <user-avatar img-width='45px'></user-avatar>
+                <user-avatar img-width='45px' :img-path='$store.state.userModule.userInfo.icon'></user-avatar>
             </header>
             <!-- 其他信息 -->
             <ul class="other-info">
@@ -60,7 +60,7 @@
                         :on-success="handleAvatarSuccess"
                         :before-upload="beforeAvatarUpload"
                         :http-request="avatarUpload">
-                        <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width: 60px">
+                        <img v-if="imageUrl" :src="imageUrl" class="avatar" style="width: 60px;border-radius: 4px;" >
                         <user-avatar v-else img-width='50px'></user-avatar>
                     </el-upload>
                 </el-form-item>
@@ -121,7 +121,7 @@
                         { required: true, message: '请填写昵称', trigger: 'blur' },
                     ],
                 },
-                imageUrl : require('@ast/images/default_avatar.jpg'),
+                imageUrl : this.$store.state.userModule.userInfo.icon,
                 cityData,//城市数据源
                 //完整的城市数据数组
                 fullCityData : [this.$store.state.userModule.userInfo.prov, this.$store.state.userModule.userInfo.city, this.$store.state.userModule.userInfo.area]

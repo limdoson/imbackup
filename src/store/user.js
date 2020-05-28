@@ -191,10 +191,16 @@ const mutations = {
 			state.chats = input.data;
 			state.list = input.data
 		} else if (input.tab == 'contacts') {
-			state.list = state.contacts
+			state.list = state.contacts.filter(item => {
+				return !item.isBlack
+			})
 		}else if (input.tab == 'teams') {
 			state.teams = input.data
 			state.list = input.data
+		} else if (input.tab == 'black') {//查看黑名单
+			state.list = state.contacts.filter(item =>{
+				return item.isBlack
+			})
 		}
 		state.tab = input.tab;
 		state.chartItem = null
@@ -255,12 +261,12 @@ const mutations = {
 		// state.chats.unshift(newContact)
 		state.contacts.unshift(newContact)
 		//新增usersMap映射
-		state.userMap[contact.accid] = {
-			accid: contact.accid,
-			name: contact.name,
-			alias: contact.alias,
+		state.userMap[newContact.accid] = {
+			accid: newContact.accid,
+			name: newContact.name,
+			alias: newContact.alias,
 			team_nick: '',
-			icon: contact.avatar,
+			icon: newContact.avatar,
 		}
 	},
 	/* 
@@ -324,6 +330,14 @@ const mutations = {
 		}
 		
 	},
+	//黑名单相关操作
+	friendBlackHandle (state, input) {
+		console.log(input)
+		state.list = state.list.filter(item => {
+			return item.isBlack == input
+		})
+		state.chartItem = null;
+	},
 	/* 
 		创建群
 	*/
@@ -334,6 +348,15 @@ const mutations = {
 		input.accid = input.teamId
 		input.showName = input.name
 		state.teams.unshift(input)
+	},
+	//通过群邀请时，在数据仓库中添加一个群
+	addTeam (state, input) {
+		if (state.tab != 'teams') {
+			return;
+		}
+		state.teams.unshift(input)
+		// state.list.unshift(input)
+		// console.log('addteam',state.teams, state.list)
 	},
 	//设置当前的聊天对象
 	setChartItem (state, input) {
@@ -422,14 +445,104 @@ const mutations = {
 	},
 	//群里新增了成员->来自于系统通知
 	teamAddMember ( state, input ){
-		if (!state.chartItem) {
+		if (!state.chartItem || state.chartItem.type != 'team') {
 			return;
 		}
 		//如果当前的聊天对象就是该群，且有成员列表，则在成员列表中添加入新成员信息
-		if (state.chartItem.type == 'team' && state.chartItem.pb_private.tid == input.team.tid && state.teamMemberList.length) {
+		if (state.teamMemberList.length) {
 			state.teamMemberList = [...state.teamMemberList, ...input.members];
+		} else {
+			state.teamMemberList = input.members
 		}
 	},
+	//当前用户修改了自己的群昵称，则对应修改自己在team中的相关数据
+	updateNickByUser (state, input) {
+		if (state.teams.length) {
+			state.teams.map(item => {
+				if (item.pb_private.tid == state.chartItem.pb_private.tid) {
+					item.pb_private.memberInfo.teamNick = input.teamNick
+				}
+			})
+		}
+		//修改在当前聊天对象中的teamNick
+		state.chartItem.pb_private.memberInfo.teamNick = input.teamNick
+	},
+	//收到群里成员修改了群昵称
+	receiveMemberUpdateNick (state, input) {
+		//仅在当前聊天对象是该群的时候进行更新，否则不更新
+		if (
+			state.chartItem.type && 
+			state.chartItem.type == `team` && 
+			state.teamMemberList && 
+			state.teamMemberList.length && 
+			state.chartItem.pb_private.tid == input.updateNickInTeam.team.tid
+		) {
+			state.teamMemberList.map( item => {
+				if (item.openId == input.updateNickInTeam.to.open_id) {
+					item.teamNick = input.updateNickInTeam.to.team_nick
+				}
+			})
+		}
+	},
+	//用户创建了群公告
+	createAnnouncementByUser (state, input) {
+		state.chartItem.base.announcements = input;
+		state.teams.map(item => {
+			if (item.base.tid == input.teamId) {
+				item.base.announcements = input.content;
+			}
+		})
+		console.log('userModule/createAnnouncementByUser收到了用户创建群公告',input)
+	},
+	//收到群公告update通知
+	R_Team_ANM_Update (state, input) {
+		console.log('群成员收到群公告更新通知', input)
+
+		if (!state.chartItem ||state.chartItem.type != 'team' || !state.teams.length) {
+			return;
+		}
+		//如果当前聊天对象就是该群，则更新聊天对象中的公告
+		if (input.updateAnnouncement.team.tid == state.chartItem.base.tid) {
+			state.chartItem.base.announcements.push(input.updateAnnouncement.announcement) 
+		}
+	},
+	//将群公告数据赋给对应的群信息
+	setTeamANM (state, input) {
+		state.chartItem.base.announcements = input;
+		state.teams.map(item => {
+			if (item.base.tid == state.chartItem.base.tid) {
+				item.base.announcements = input;
+			}
+		})
+	},
+	//用户删除了公告
+	deleteAMNTbyUser (state, id) {
+		state.chartItem.base.announcements = state.chartItem.base.announcements.filter(item => {
+			return item.id != id
+		})
+	},
+	//收到删除公告通知
+	receiveDeleteANM (state, input) {
+		console.log('收到了删除公告的通知', input);
+		//如果当前聊天对象就是该群，则从该聊天对象的公告中删除该公告
+		if (state.chartItem.base.tid == input.deleteAnnouncement.team.tid) {
+			state.chartItem.base.announcements = state.chartItem.base.announcements.filter(item => {
+				return item.id != input.deleteAnnouncement.ids[0]
+			})
+		}
+		//如果teams中有保存拉取过的群公告了，则从teams中删除该公告
+		if (!state.teams.length) {
+			return;
+		}
+		state.teams.map(item => {
+			if (item.base.tid == input.deleteAnnouncement.team.tid && item.base.announcements) {
+				console.log('111',item)
+				item.base.announcements = item.base.announcements.filter(item =>{
+					return item.id != input.deleteAnnouncement.ids[0]
+				})
+			}
+		})
+	}
 }
 
 const actions = {
@@ -551,7 +664,8 @@ const actions = {
 						tab : input,
 						data : res.teaminfoList.map(item => {
 							item.isShow = true; //给一个初始的isShow = true 用在搜索中过滤
-							item.type ='team'
+							item.type ='team';
+							item.base.announcements = []
 							return item
 						})
 					})

@@ -4,7 +4,7 @@
         :src="imgPath"
         fit="cover"
         :style="{width : imgWidth}"
-        style="border-radius : 4px">
+        style="border-radius : 4px; cursor: pointer">
         <img 
             :src="require('@ast/images/default_avatar.jpg')" 
             alt="用户头像" 

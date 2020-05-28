@@ -42,7 +42,7 @@
                             <img :src="firendAvatar(item)" alt="好友头像">
                         </el-badge>
                         <span>
-                            <template v-if='tab == `contacts`'>
+                            <template v-if='tab == `contacts` || tab == `black`'>
                                 {{item | showName}}
                             </template>
                             <template v-if='tab == `teams` && item.base'>
@@ -60,6 +60,9 @@
                     </template>
                     <template v-if='tab == `contacts`'>
                         暂无任何好友
+                    </template>
+                    <template v-if='tab == `black`'>
+                        暂无任何黑名单成员
                     </template>
                     <template v-if='tab == `teams`'>
                         暂无任何群信息
@@ -178,11 +181,6 @@
                 }
             }
         },
-        watch : {
-            tab (n, o) {
-                console.log('tab',n)
-            }
-        },
         methods :{
             changeSearchText () {
                 if (this.searchText || this.searchLast) {
@@ -236,7 +234,7 @@
                             notice.status = result.applyStatus
                             this.$store.dispatch('updateNoticeStatus', notice, {root : true})
                         })
-                } else if (notice.type == ApplyType.T2P) { //通过群加好友
+                } else if (notice.type == ApplyType.T2P) { //接受群邀请
                     //接受群邀请
                     AcceptInvite(this.$store.state.userModule.config, notice)
                     .then(result => {
@@ -247,8 +245,12 @@
                         } else {
                             this.$message({type: 'error', message: baseinfo.msg})
                         }
-
-                        notice.status = result.applyStatus
+                        //通知store添加一个群
+                        result.teaminfo.isShow = true; //默认设置isShow为true
+                        result.teaminfo.type = 'team';//默认聊天类型
+                        notice.status = result.applyStatus;//设置消息的applyStatud为通过申请后返回的applyStatus
+                        //通知vuex更新相关数据
+                        this.$store.commit('userModule/addTeam',result.teaminfo)
                         this.$store.dispatch('updateNoticeStatus', notice, {root : true})
                     })
                 }
@@ -340,7 +342,7 @@
         }
         .chart-list {
             height: calc(~"100%" - 18px);
-            overflow-y: scroll;
+            overflow-y: auto;
             &::-webkit-scrollbar {/*滚动条整体样式*/
                 width: 6px; /*高宽分别对应横竖滚动条的尺寸*/
                 height: 4px;

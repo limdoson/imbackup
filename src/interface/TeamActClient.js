@@ -1,11 +1,18 @@
 import { rpcLog } from '@itf/config'
 import {
-  GetMemberListRequest, UpdateTeamRequest, PullSpecifiedRequest, AddMemberRequest, CreateTeamRequest, UpdateTeamNickRequest,
+    GetMemberListRequest, UpdateTeamRequest, PullSpecifiedRequest, AddMemberRequest, CreateTeamRequest, UpdateTeamNickRequest,
     SetManagerRequest, ChangeOwnerRequest, TeamChangeOwnerLeaveType, TeamMemberMuteRequest, KickMemberRequest, LeaveTeamRequest,
     TeamAddFriendRequest, UpdateAnnouncementRequest
 } from '@itf/common/common_pb'
-import { AcceptTeamInviteRequest, RejectTeamInviteRequest } from '@itf/im/message_pb'
+import { 
+    AcceptTeamInviteRequest, 
+    RejectTeamInviteRequest,
+    CreateAnnouncementRequest,
+    PullAnnouncementListRequest,
+    DeleteAnnouncementRequest } from '@itf/im/message_pb'
 import { TeamActClient } from '@itf/im/im_grpc_web_pb'
+import { request } from '@u/request'
+
 
 let teamActClient = new TeamActClient(process.env.VUE_APP_GRPC_HOSTNAME, null, null)
 
@@ -99,6 +106,8 @@ export function AddTeamMembers(metadata, teamId, accids) {
         })
     })
 }
+
+
 
 // 设置群昵称
 export function UpdateNickInTeam(metadata, teamId, openId, teamNick) {
@@ -308,4 +317,71 @@ export function LeaveTeam (metadata, tid) {
             }
         })
     })
+}
+
+
+//修改群昵称 ： 可以是群主修改别人，也可以是自己修改自己
+export function updateTeamNick (metadata, from , to, nick, tid) {
+    let req = new UpdateTeamNickRequest()
+    req.setTid(tid)
+    req.setFrom(from)
+    req.setTo(to)
+    req.setNick(nick)
+
+    return new Promise( (resolve, reject) => {
+        teamActClient.updateTeamNick( req, metadata, (err, response) => {
+            rpcLog('updateTeamNick', req, err, response)
+            if (err) {
+                reject(err)
+            } else {
+                resolve(response.toObject())
+            }
+        })
+    })
+}
+
+//创建群公告
+export function createAnnouncement (metadata, title, content, tid) {
+    let req = new CreateAnnouncementRequest()
+    req.setTitle(title)
+    req.setContent(content)
+    req.setTid(tid)
+
+    return new Promise( (resolve, reject) =>{
+        teamActClient.createAnnouncement( req, metadata, (err, response) => {
+            rpcLog('createAnnouncement', req, err, response)
+            if (err) {
+                reject(err)
+            } else {
+                resolve(response.toObject())
+            }
+        })
+    })
+}
+
+//拉取群公告
+export function pullAnnouncementList (metadata, tid, page) {
+    let req = new PullAnnouncementListRequest()
+    req.setTid(tid)
+    req.setPage(page)
+
+    return new Promise( (resolve, reject) =>{
+        teamActClient.pullAnnouncementList( req, metadata, (err, response) => {
+            rpcLog('pullAnnouncementList', req, err, response)
+            if (err) {
+                reject(err)
+            } else {
+                resolve(response.toObject())
+            }
+        })
+    })
+}
+
+//删除群公告
+export function deleteAnnouncement (metadata, args) {
+    return request({
+        request : new DeleteAnnouncementRequest(),
+        server : teamActClient,
+        method : 'deleteAnnouncement',
+    },  metadata, args)
 }
