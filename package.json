@@ -10,7 +10,7 @@
     "@grpc/proto-loader": "^0.5.4",
     "@improbable-eng/grpc-web": "^0.12.0",
     "@types/google-protobuf": "^3.7.2",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "core-js": "^3.6.4",
     "crypto-js": "^4.0.0",
     "element-ui": "^2.13.2",
